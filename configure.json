@@ -1,0 +1,58 @@
+{
+  "style" : {
+    "frame" : {
+      "borderColor" : "000000",
+      "fillColor" : "826969",
+      "borderStyle" : "solid",
+      "borderWidth" : 5
+    },
+    "shop" : {
+      "category" : {
+        "25" : "BFD1B8",
+        "18" : "DEEA90",
+        "10" : "E0C4A8",
+        "26" : "FEF0D9",
+        "19" : "FED493",
+        "11" : "F8D1DA",
+        "27" : "D1D4A8",
+        "12" : "DDD8DD",
+        "1" : "E5DA78",
+        "28" : "DEEA90",
+        "20" : "E0C4A8",
+        "2" : "D4EECB",
+        "13" : "E5DA78",
+        "3" : "BFD1B8",
+        "21" : "F8D1DA",
+        "14" : "D4EECB",
+        "4" : "FEF0D9",
+        "29" : "FED493",
+        "5" : "D1D4A8",
+        "15" : "BFD1B8",
+        "22" : "DDD8DD",
+        "6" : "DEEA90",
+        "30" : "E0C4A8",
+        "23" : "E5DA78",
+        "16" : "FEF0D9",
+        "7" : "E2DBBF",
+        "8" : "E9BB90",
+        "24" : "D4EECB",
+        "17" : "D1D4A8",
+        "9" : "00FF00"
+      },
+      "fontSize" : 12,
+      "fillColor" : "FFFF00",
+      "fontName" : "STHeitiSC-Medium",
+      "borderColor" : "8D8B9F",
+      "borderWidth" : 1,
+      "borderStyle" : "solid",
+      "textColor" : "000000"
+    },
+    "facility" : {
+      "fontSize" : 22,
+      "fontName" : "PalmapPublic",
+      "backColor" : "0000FF",
+      "textColor" : "FFFFFF",
+      "opaque" : true
+    }
+  }
+}
