@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/display_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shoppos9"
+        android:orientation="vertical"
+        android:paddingLeft="22dp" >
+
+        <TextView
+            android:id="@+id/shop_display"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center|center_vertical|fill_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="0dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="0dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/shop_share"
+        android:layout_width="30dp"
+        android:layout_height="36dp"
+        android:layout_alignLeft="@id/display_linear"
+        android:background="@android:color/transparent"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp" />
+
+    <ImageButton
+        android:id="@+id/shop_more"
+        android:layout_width="30dp"
+        android:layout_height="36dp"
+        android:layout_alignRight="@id/display_linear"
+        android:background="@android:color/transparent"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp" />
+
+</RelativeLayout>

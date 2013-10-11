@@ -1,0 +1,58 @@
+package com.macrowen.macromap;
+
+import java.io.File;
+
+import org.json.JSONObject;
+
+import android.os.Bundle;
+import android.os.Environment;
+import android.app.Activity;
+import android.view.Menu;
+import android.view.MotionEvent;
+
+public class MainActivity extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		// String fname = "/sdcard/MacroMap/x2.json";
+		// JSONObject json = new JSONObject(fname);
+		MacroMap map = (MacroMap) findViewById(R.id.macroMap1);
+		map.setMall("1", "商场");
+		map.setMall("1");
+		// map.
+		// map.setFloor("2", "Floor 2");
+		// map.setJson("1", "2", new
+		// File(Environment.getExternalStorageDirectory() +
+		// "/MacroMap/x2.json"));
+		// map.setJsonUrl("1", "1", ACCESSIBILITY_SERVICE)
+		// map.setJson("1");
+	}
+
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// // Inflate the menu; this adds items to the action bar if it is present.
+	// getMenuInflater().inflate(R.menu.main, menu);
+	// return true;
+	// }
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// MacroMap.logd("event=" + event);
+		// MacroMap.logd("event.=" + event.getAction());
+		MacroMap map = (MacroMap) findViewById(R.id.macroMap1);
+		// MacroMap.logd("map.getTop()=" + map.getTop());
+		// MacroMap.logd("event.getY()=" + event.getY() + ", map.getY()=" +
+		// map.getY());
+		int[] xy = { (int) event.getX(), (int) event.getY() };
+		// MacroMap.logd("x=" + xy[0] + ", y=" + xy[1]);
+		map.getLocationInWindow(xy);
+		// MacroMap.logd("x=" + xy[0] + ", y=" + xy[1]);
+		// MacroMap.logd("x=" + (event.getX()- xy[0]) + ", y=" +(event.getY()-
+		// xy[1]));
+		event.setLocation(event.getX() - xy[0], event.getY() - xy[1]);
+		map.dispatchTouchEvent(event);
+		return super.onTouchEvent(event);
+	}
+}

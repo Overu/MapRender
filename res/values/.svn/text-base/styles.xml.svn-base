@@ -1,0 +1,59 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+
+        <!--
+             <item name="mallid">1</item>
+        <item name="mallName">"1"</item>
+        <item name="floorid">1</item>
+        <item name="floorName">1</item>
+        <item name="floorWidth">1</item>
+        <item name="floorHeight">1</item>
+        <item name="scale">1</item>
+        <item name="poilist">1</item>
+        <item name="rendConfig">1</item>
+        -->
+
+        <item name="mapBackgroundColor">#EEFFFF</item>
+        <item name="frameBorderColor">#2288BB</item>
+        <item name="frameFilledColor">#DDEEFF</item>
+        <item name="frameBorderSize">4</item>
+        <item name="assistantBorderColor">#114488</item>
+        <item name="assistantBorderHighlightColor">#112233</item>
+        <item name="assistantFilledColor">#DDEEFF</item>
+        <item name="assistantFilledHighlightColor">#CCDDEE</item>
+        <item name="assistantTextColor">#446688</item>
+        <item name="assistantBorderSize">2</item>
+        <item name="shopBorderColor">#2288BB</item>
+        <item name="shopBorderHighlightColor">#446699</item>
+        <item name="shopFilledColor">#CCDDFF</item>
+        <item name="shopFilledHighlightColor">#44DDEECC</item>
+        <item name="shopTextColor">#664422</item>
+        <item name="shopBorderSize">2</item>
+        <item name="publicServiceTextColor">#888800</item>
+        <item name="publicServiceTextHighlightColor">#FF8800</item>
+        <item name="publicServiceAtmIcon">#778877</item>
+        <item name="publicServiceToiletIcon">#887788</item>
+        <item name="escalatorTextColor">#223344</item>
+        <item name="escalatorTextHighlightColor">#445566</item>
+        <item name="escalatorEscalatorIcon">#887777</item>
+        <item name="escalatorElevatorIcon">#778888</item>
+        <item name="escalatorStairIcon">#888877</item>
+        <item name="annotationTextColor">#FF8800</item>
+        <item name="annotationTextHighlightColor">#88FF00</item>
+    </style>
+
+</resources>

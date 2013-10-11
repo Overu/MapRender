@@ -1,0 +1,46 @@
+<resources>
+
+    <declare-styleable name="MacroMap">
+
+        <!--
+             <attr name="mallid" fromat="integer" />
+        <attr name="mallName" fromat="string" />
+        <attr name="floorid" fromat="string" />
+        <attr name="floorName" fromat="string" />
+        <attr name="floorWidth" fromat="string" />
+        <attr name="floorHeight" fromat="string" />
+        <attr name="scale" fromat="string" />
+        <attr name="poiList" fromat="string" />
+        <attr name="rendConfig" fromat="string" />
+        -->
+
+        <attr name="mapBackgroundColor" format="color" />
+        <attr name="frameBorderColor" format="color" />
+        <attr name="frameFilledColor" format="color" />
+        <attr name="frameBorderSize" format="integer" />
+        <attr name="assistantBorderColor" format="color" />
+        <attr name="assistantBorderHighlightColor" format="color" />
+        <attr name="assistantFilledColor" format="color" />
+        <attr name="assistantFilledHighlightColor" format="color" />
+        <attr name="assistantTextColor" format="color" />
+        <attr name="assistantBorderSize" format="integer" />
+        <attr name="shopBorderColor" format="color" />
+        <attr name="shopBorderHighlightColor" format="color" />
+        <attr name="shopFilledColor" format="color" />
+        <attr name="shopFilledHighlightColor" format="color" />
+        <attr name="shopTextColor" format="color" />
+        <attr name="shopBorderSize" format="integer" />
+        <attr name="publicServiceTextColor" format="color" />
+        <attr name="publicServiceTextHighlightColor" format="color" />
+        <attr name="publicServiceAtmIcon" format="reference|color" />
+        <attr name="publicServiceToiletIcon" format="reference|color" />
+        <attr name="escalatorTextColor" format="color" />
+        <attr name="escalatorTextHighlightColor" format="color" />
+        <attr name="escalatorEscalatorIcon" format="reference|color" />
+        <attr name="escalatorElevatorIcon" format="reference|color" />
+        <attr name="escalatorStairIcon" format="reference|color" />
+        <attr name="annotationTextColor" format="color" />
+        <attr name="annotationTextHighlightColor" format="color" />
+    </declare-styleable>
+
+</resources>
