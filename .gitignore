@@ -7,6 +7,10 @@ target/
 .classpath
 bin/
 gen/
+.svn/
 
 # Created by OS.
 .DS_Store
+
+# lint.xml
+lint.xml
