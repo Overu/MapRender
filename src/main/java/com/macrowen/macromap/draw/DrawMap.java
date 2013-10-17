@@ -118,10 +118,6 @@ public class DrawMap<T> {
     return point;
   }
 
-  public Shop showShopPosition(float x, float y) {
-    return null;
-  }
-
   public String getType() {
     return mType;
   }
@@ -165,6 +161,14 @@ public class DrawMap<T> {
     this.mRedraw = reDraw;
   }
 
+  public PointF scalePoint(float xed, float yed) {
+    float x = xed + mOffset.x;
+    float y = yed + mOffset.y;
+    x = x * mScale + delegateWidth / 2 * (1 - mScale);
+    y = y * mScale + delegateHeight / 2 * (1 - mScale);
+    return new PointF(x, y);
+  }
+
   public void setData(JSONData<T> mData) {
     this.mData = mData;
   }
@@ -184,6 +188,15 @@ public class DrawMap<T> {
     this.mType = type;
   }
 
+  public Shop showShopPosition(float x, float y) {
+    return null;
+  }
+
+  // protected void support(DrawMap drawMap) {
+  // drawMap.mOffset = this.mOffset;
+  // drawMap.mScale = this.mScale;
+  // }
+
   public boolean threepointsoneline(PointF p, PointF q, PointF r) {
     float a = (p.x - q.x) * (q.y - r.y);
     float b = (p.y - q.y) * (q.x - r.x);
@@ -193,11 +206,6 @@ public class DrawMap<T> {
     }
     return Math.abs((b + a) / (b - a)) > 5;
   }
-
-  // protected void support(DrawMap drawMap) {
-  // drawMap.mOffset = this.mOffset;
-  // drawMap.mScale = this.mScale;
-  // }
 
   protected Canvas genLayer(Bitmap bitmap) {
     bitmap = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);

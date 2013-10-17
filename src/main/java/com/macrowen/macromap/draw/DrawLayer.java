@@ -132,17 +132,15 @@ public class DrawLayer<T> extends DrawMap<T> {
         PointF center = getPoint(json.optJSONArray(4));
         float startAngle = -(float) json.optDouble(5);
         float sweepAngle = -(float) json.optDouble(6);
-        RectF oval = new RectF(center.x - rx, center.y - ry, center.x
-            + rx, center.y + ry);
+        RectF oval = new RectF(center.x - rx, center.y - ry, center.x + rx, center.y + ry);
         linecount++;
         if (linecount > 0) {// && linecount < 6) {
-          point = new PointF((float) (center.x + rx
-              * Math.cos(startAngle + sweepAngle)),
-              (float) (center.y + ry * Math.sin(startAngle + sweepAngle)));
+          point =
+              new PointF((float) (center.x + rx * Math.cos(startAngle + sweepAngle)), (float) (center.y + ry
+                  * Math.sin(startAngle + sweepAngle)));
           points[linecount] = point;
           if (linecount > 1) {
-            if (threepointsoneline(points[linecount],
-                points[linecount - 1], points[linecount - 2])) {
+            if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
               points[linecount - 1] = points[linecount];
               linecount--;
             }
@@ -167,8 +165,7 @@ public class DrawLayer<T> extends DrawMap<T> {
         if (linecount > 0) {// && linecount < 6) {
           points[linecount] = point;
           if (linecount > 1) {
-            if (threepointsoneline(points[linecount],
-                points[linecount - 1], points[linecount - 2])) {
+            if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
               points[linecount - 1] = points[linecount];
               linecount--;
               // logd("linecount=" + linecount);
@@ -220,11 +217,8 @@ public class DrawLayer<T> extends DrawMap<T> {
         mTextPath.moveTo(x2, y2);
         mTextPath.lineTo(x1, y1);
       }
-      mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)
-          * (y1 - y2));
-    } else if (index > 0
-        && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay
-            .equalsIgnoreCase("null")))) {
+      mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    } else if (index > 0 && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay.equalsIgnoreCase("null")))) {
       // logd("mDisplay=" + mDisplay);
       Path path = new Path();
       float x1, x2, y1, y2;
@@ -266,14 +260,10 @@ public class DrawLayer<T> extends DrawMap<T> {
         dy = 1;
       }
       Path p = new Path();
-      p.moveTo(rect.centerX() - (x2 - x1) / 10, rect.centerY()
-          - (y2 - y1) / 10);
-      p.lineTo(rect.centerX() + (x2 - x1) / 10, rect.centerY()
-          + (y2 - y1) / 10);
-      p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY()
-          + (y2 - y1) / 10 + dy);
-      p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY()
-          - (y2 - y1) / 10 + dy);
+      p.moveTo(rect.centerX() - (x2 - x1) / 10, rect.centerY() - (y2 - y1) / 10);
+      p.lineTo(rect.centerX() + (x2 - x1) / 10, rect.centerY() + (y2 - y1) / 10);
+      p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY() + (y2 - y1) / 10 + dy);
+      p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY() - (y2 - y1) / 10 + dy);
       rg = new Region(rect);
       rg.setPath(p, region);
       p.close();
@@ -287,8 +277,7 @@ public class DrawLayer<T> extends DrawMap<T> {
       matrix.setScale(10, 10);
       mTextPath.transform(matrix);
       // rect = rg.getBounds();
-      mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width()
-          + rect.height() * rect.height());
+      mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width() + rect.height() * rect.height());
       mTextPath = null;
     }
     // mRegion = new Region();
@@ -301,10 +290,9 @@ public class DrawLayer<T> extends DrawMap<T> {
 
   @Override
   public void onDrawPosition(Canvas canvas) {
-    float x = mPosition.x + mOffset.x;
-    float y = mPosition.y + mOffset.y;
-    x = x * mScale + delegateWidth / 2 * (1 - mScale);
-    y = y * mScale + delegateHeight / 2 * (1 - mScale);
+    PointF p = scalePoint(mPosition.x, mPosition.y);
+    float x = p.x;
+    float y = p.y;
     if (x < -delegateWidth / 3 || x > delegateWidth * 4 / 3 || y < -delegateHeight / 3 || y > delegateHeight * 4 / 3) {
       return;
     }

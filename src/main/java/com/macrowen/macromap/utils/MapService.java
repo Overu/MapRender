@@ -2,6 +2,7 @@ package com.macrowen.macromap.utils;
 
 import com.macrowen.macromap.draw.Floor;
 import com.macrowen.macromap.draw.Map;
+import com.macrowen.macromap.draw.Shop;
 import com.macrowen.macromap.draw.ShopPosition;
 import com.macrowen.macromap.draw.ShopPosition.OnMapEventListener;
 
@@ -15,6 +16,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
+
+import android.graphics.PointF;
 
 import android.graphics.Canvas;
 
@@ -164,6 +168,11 @@ public class MapService {
 
   public ShopPosition getShopPosition() {
     return mMap.getShopPosition();
+  }
+
+  public List<Shop> getShopsByScope(float x, float y, int scope) {
+    PointF scalePoint = mMap.scalePoint(x, y);
+    return null;
   }
 
   public void initMapData(String mapId, String mapName) {
@@ -325,7 +334,7 @@ public class MapService {
     return 0;
   }
 
-  protected int setFloorData(String mallid, String floorid, File file) {
+  protected int setFloorData(String mapId, String floorid, File file) {
     try {
       FileInputStream input = new FileInputStream(file);
       byte[] buf = new byte[input.available()];

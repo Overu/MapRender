@@ -51,6 +51,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -186,7 +188,9 @@ public class MacroMap extends ScrollView {
     public void run() {
       try {
         mFile = Environment.getExternalStorageDirectory();
-        mFile = new File(mFile, "/Palmap/MacroMap/" + Base64.encodeToString(mUrl.getBytes(), Base64.NO_WRAP));
+        mFile =
+            new File(mFile, "/Palmap/MacroMap/"
+                + Base64.encodeToString(mUrl.getBytes(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
         logd("url=" + mUrl + ", file=" + mFile.getAbsolutePath());
         if (mFile.length() < 4) {
           mFile.getParentFile().mkdirs();
@@ -522,6 +526,7 @@ public class MacroMap extends ScrollView {
               float rotation = (float) json.optDouble(3);
               if (rotation != 0) {
                 logd("rotation=" + rotation);
+                continue;
               }
               PointF center = getPoint(json.optJSONArray(4));
               float startAngle = -(float) json.optDouble(5);
@@ -1120,10 +1125,39 @@ public class MacroMap extends ScrollView {
         mIndex = index;
       }
 
+      public void setPublicService(boolean highlight) {
+        for (Entry<PointF, PublicService> entry : mPublicServices.entrySet()) {
+          PublicService ps = entry.getValue();
+          ps.setHighlight(highlight);
+        }
+      }
+
+      public void setPublicService(String type, boolean highlight) {
+        for (Entry<PointF, PublicService> entry : mPublicServices.entrySet()) {
+          PublicService ps = entry.getValue();
+          if (ps.mType.equalsIgnoreCase(type)) {
+            ps.setHighlight(highlight);
+          }
+        }
+      }
+
+      public void setShop(String type, boolean highlight) {
+        for (Entry<PointF, Shop> entry : mShops.entrySet()) {
+          Shop ps = entry.getValue();
+          if (ps.mType.equalsIgnoreCase(type)) {
+            ps.setHighlight(highlight);
+          }
+        }
+      }
+
       @Override
       public String toString() {
         return mMall.mName + " —— " + mName;
       }
+
+      // String mFloorPrevious = null;
+      // String mFloorCurrent = null;
+      // String mFloorNext = null;
 
       void addOffset(float x, float y) {
         mDeltaOffset = new PointF(x, y);
@@ -1178,7 +1212,7 @@ public class MacroMap extends ScrollView {
               && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
             PointF p = mShop.mTextCenter;
             if (p == null) {
-              p = mShop.mStart;
+              p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
             }
             p = new PointF(p.x, p.y);
             p.offset(mOffset.x, mOffset.y);
@@ -1292,7 +1326,7 @@ public class MacroMap extends ScrollView {
             && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
           PointF p = mShop.mTextCenter;
           if (p == null) {
-            p = mShop.mStart;
+            p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
           }
           p = new PointF(p.x, p.y);
           p.offset(mOffset.x, mOffset.y);
@@ -1325,6 +1359,12 @@ public class MacroMap extends ScrollView {
       }
 
       void drawNavigation(Canvas canvas) {
+        // if (mNavigationButtons == null)
+        // {
+        // LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // mNavigationButtons = inflater.inflate(R.layout.navigation, mRelativeLayout, true);
+        // mNavigationButtons.setVisibility(INVISIBLE);
+        // }
         int n = 0;
         Paint paint = mPaintText;
         paint.setColor(0xFFFF8800);
@@ -1371,6 +1411,102 @@ public class MacroMap extends ScrollView {
           paint.setColor(0xFF0000FF);
           canvas.drawCircle(lastx, lasty, 5, paint);
         }
+        String prev = null;
+        String next = null;
+        String floorid = null;
+        int i = 0;
+        for (i = 0; i < mNavigation.length(); i++) {
+          JSONObject json = mNavigation.optJSONObject(i);
+          floorid = json.optString("floor_id");
+          if (!mId.equals(floorid)) {
+            prev = floorid;
+            floorid = null;
+            continue;
+          }
+          break;
+        }
+        for (; i < mNavigation.length(); i++) {
+          JSONObject json = mNavigation.optJSONObject(i);
+          next = json.optString("floor_id");
+          if (!mId.equals(next)) {
+            break;
+          }
+          next = null;
+        }
+        if (floorid == null) {
+          prev = null;
+        }
+        mNavigationButtons.setText(prev, floorid, next);
+        // mFloorPrevious = prev;
+        // mFloorCurrent = floorid;
+        // mFloorNext = next;
+        // Button button = (Button) findViewById(R.id.button_prev);
+        // if (mFloorPrevious == null)
+        // {
+        // button.setVisibility(INVISIBLE);
+        // }
+        // else
+        // {
+        // button.setVisibility(VISIBLE);
+        // button.setOnClickListener(new OnClickListener()
+        // {
+        // @Override
+        // public void onClick(View v)
+        // {
+        // setFloor(mFloorPrevious);
+        // }
+        // });
+        // }
+        // button = (Button) findViewById(R.id.button_curr);
+        // if (mFloorCurrent == null)
+        // {
+        // button.setVisibility(INVISIBLE);
+        // }
+        // else
+        // {
+        // button.setVisibility(VISIBLE);
+        // button.setOnClickListener(new OnClickListener()
+        // {
+        // @Override
+        // public void onClick(View v)
+        // {
+        // setFloor(mFloorCurrent);
+        // }
+        // });
+        // }
+        // button = (Button) findViewById(R.id.button_next);
+        // if (mFloorNext == null)
+        // {
+        // button.setVisibility(INVISIBLE);
+        // }
+        // else
+        // {
+        // button.setVisibility(VISIBLE);
+        // button.setOnClickListener(new OnClickListener()
+        // {
+        // @Override
+        // public void onClick(View v)
+        // {
+        // setFloor(mFloorNext);
+        // }
+        // });
+        // }
+        // // Button button = (Button)findViewById(R.id.)
+        // // mFloors.get(prev).mName
+        // {
+        // mNavigationButtons.setVisibility(VISIBLE);
+        // // RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+        // // FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        // RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        // params.leftMargin = getWidth() - mNavigationButtons.getWidth() / 2;
+        // params.topMargin = getHeight() - mNavigationButtons.getHeight();
+        // params.leftMargin = getWidth() / 2;
+        // params.topMargin = getHeight() / 2;
+        // params.width = LayoutParams.WRAP_CONTENT;
+        // params.height = LayoutParams.WRAP_CONTENT;
+        // mNavigationButtons.setLayoutParams(params);
+        // // mRelativeLayout.addView(view, params);
+        // }
       }
 
       void drawPosition(Canvas canvas) {
@@ -1409,6 +1545,16 @@ public class MacroMap extends ScrollView {
         }
         return null;
       }
+
+      // void setShop(String shopid)
+      // {
+      // mPosition = new PointF(x, y);
+      // if (mBorder != null)
+      // {
+      // setOffset(x + getWidth() / 2 - mBorder.left, y + getHeight() / 2 - mBorder.top);
+      // }
+      // invalidate();
+      // }
 
       int setJson(JSONObject json) {
         // logd("json=" + json);
@@ -1478,16 +1624,6 @@ public class MacroMap extends ScrollView {
         invalidate();
       }
 
-      // void setShop(String shopid)
-      // {
-      // mPosition = new PointF(x, y);
-      // if (mBorder != null)
-      // {
-      // setOffset(x + getWidth() / 2 - mBorder.left, y + getHeight() / 2 - mBorder.top);
-      // }
-      // invalidate();
-      // }
-
       void setPosition(float x, float y) {
         mPosition = new PointF(x, y);
         setOffset(-x + getWidth() / 2, -y + getHeight() / 2);
@@ -1509,6 +1645,25 @@ public class MacroMap extends ScrollView {
         mScale = scale;
         setOffset(mOffset.x, mOffset.y);
       }
+
+      void setShop(String shopid) {
+        if (shopid == null || mShops == null || shopid.isEmpty() || mShops.isEmpty()) {
+          return;
+        }
+        for (Mall.Floor.Shop shop : mMall.mFloor.mShops.values()) {
+          if (shopid.equals("" + shop.mId)) {
+            mShop = shop;
+            RectF rectf = new RectF();
+            mShop.mDrawPath.computeBounds(rectf, false);
+            if (mShop.mDrawTextSize < mMiniumSize) {
+              float scale = mScale * Math.min(getWidth() / 3 / rectf.width(), getHeight() / 3 / rectf.height());
+              setScale(scale);
+            }
+            setOffset(-mShop.mRect.centerX() + getWidth() / 2, -mShop.mRect.centerY() + getHeight() / 2);
+            break;
+          }
+        }
+      }
     }
 
     Bitmap mBitmap;
@@ -1516,8 +1671,8 @@ public class MacroMap extends ScrollView {
     Bitmap mBmp;
 
     int mDrawTimes = 0;
-    Floor mFloor;
 
+    Floor mFloor;
     HashMap<String, Floor> mFloors = new HashMap<String, Floor>();
 
     String mId;
@@ -1531,6 +1686,24 @@ public class MacroMap extends ScrollView {
     Mall(String mallid, String mallname) {
       mId = mallid;
       mName = mallname;
+    }
+
+    public void setPublicService(boolean highlight) {
+      if (mFloor != null) {
+        mFloor.setPublicService(highlight);
+      }
+    }
+
+    public void setPublicService(String type, boolean highlight) {
+      if (mFloor != null) {
+        mFloor.setPublicService(type, highlight);
+      }
+    }
+
+    public void setShop(String type, boolean highlight) {
+      if (mFloor != null) {
+        mFloor.setShop(type, highlight);
+      }
     }
 
     void addOffset(float x, float y) {
@@ -1607,7 +1780,7 @@ public class MacroMap extends ScrollView {
           RectF rectf =
               new RectF(x, y, x + getWidth() * 5 / 3 * mFloor.mScale / mFloor.mLastScale - 2 * w * mFloor.mScale, y + getHeight() * 5 / 3
                   * mFloor.mScale / mFloor.mLastScale - 2 * w * mFloor.mScale);
-          logd("rect=" + rect + ", rectf=" + rectf);
+          // logd("rect=" + rect + ", rectf=" + rectf);
           canvas.drawBitmap(mBitmap, rect, rectf, paint);
           if (mShopPosition.mShow) {
             mShopPosition.setVisibility(VISIBLE);
@@ -1703,6 +1876,107 @@ public class MacroMap extends ScrollView {
         mFloor.setScale(scale);
       }
     }
+
+    void setShop(String shopid) {
+      if (mFloor != null) {
+        mFloor.setShop(shopid);
+      }
+    }
+  }
+
+  class NavigationButtons extends RelativeLayout {
+
+    String mFloorPrevious = null;
+
+    String mFloorCurrent = null;
+
+    String mFloorNext = null;
+
+    public NavigationButtons(Context context) {
+      super(context);
+      init();
+    }
+
+    public NavigationButtons(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      init();
+    }
+
+    public NavigationButtons(Context context, AttributeSet attrs, int defStyle) {
+      super(context, attrs, defStyle);
+      init();
+    }
+
+    void init() {
+      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      inflater.inflate(R.layout.navigation, this, true);
+      Button button = (Button) findViewById(R.id.button_prev);
+      button.setOnClickListener(new OnClickListener() {
+        public void onClick(View v) {
+          setFloor(mFloorPrevious);
+        }
+      });
+      button = (Button) findViewById(R.id.button_curr);
+      button.setOnClickListener(new OnClickListener() {
+        public void onClick(View v) {
+          setFloor(mFloorCurrent);
+        }
+      });
+      button = (Button) findViewById(R.id.button_next);
+      button.setOnClickListener(new OnClickListener() {
+        public void onClick(View v) {
+          setFloor(mFloorNext);
+        }
+      });
+    }
+
+    void setText(String prev, String floorid, String next) {
+      mFloorPrevious = prev;
+      mFloorCurrent = floorid;
+      mFloorNext = next;
+      mNavigationButtons.setVisibility(INVISIBLE);
+      Button button = (Button) findViewById(R.id.button_prev);
+      button.setVisibility(mFloorPrevious == null ? INVISIBLE : VISIBLE);
+      button.setText("");
+      if (mMall != null) {
+        Mall.Floor floor = mMall.mFloors.get(mFloorPrevious);
+        if (floor != null) {
+          button.setText("从" + floor.mName + "来，");
+          mNavigationButtons.setVisibility(VISIBLE);
+        }
+      }
+      button = (Button) findViewById(R.id.button_curr);
+      button.setVisibility(mFloorCurrent == null ? INVISIBLE : VISIBLE);
+      button.setText("");
+      if (mMall != null) {
+        Mall.Floor floor = mMall.mFloors.get(mFloorCurrent);
+        if (floor != null) {
+          button.setText("当前是" + floor.mName);
+          mNavigationButtons.setVisibility(VISIBLE);
+        }
+      }
+      button = (Button) findViewById(R.id.button_next);
+      button.setVisibility(mFloorNext == null ? INVISIBLE : VISIBLE);
+      button.setText("");
+      if (mMall != null) {
+        Mall.Floor floor = mMall.mFloors.get(mFloorNext);
+        if (floor != null) {
+          button.setText("，　前往" + floor.mName);
+          mNavigationButtons.setVisibility(VISIBLE);
+        }
+      }
+
+      // FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+      params.leftMargin = (MacroMap.this.getWidth() - mNavigationButtons.getWidth()) / 2;
+      params.topMargin = MacroMap.this.getHeight() - mNavigationButtons.getHeight();
+      params.leftMargin = 0;
+      // params.topMargin = 0;
+      params.topMargin = MacroMap.this.getHeight() - 200;
+      params.width = LayoutParams.WRAP_CONTENT;
+      params.height = LayoutParams.WRAP_CONTENT;
+      mNavigationButtons.setLayoutParams(params);
+    }
   }
 
   class ShopPosition extends RelativeLayout {
@@ -1770,16 +2044,17 @@ public class MacroMap extends ScrollView {
   private int mAnnotationTextColor = Color.BLACK;
 
   private int mAnnotationTextHighlightColor = Color.YELLOW;
-  private int mAssistantBorderColor = Color.MAGENTA;
 
+  private int mAssistantBorderColor = Color.MAGENTA;
   private int mAssistantBorderHightlightColor = Color.GREEN;
+
   private int mAssistantBorderSize = 3;
   private int mAssistantFilledColor = Color.GREEN;
   private int mAssistantFilledHighlightColor = Color.YELLOW;
   private int mAssistantTextColor = Color.BLACK;
   HashMap<String, Integer> mBorderColors = new HashMap<String, Integer>();
-
   ConfigureFile mConfigure = new ConfigureFile(new File(Environment.getExternalStorageDirectory(), "/Palmap/configure.json"));
+
   // private Drawable mEscalatorElevatorIcon;
   // private Drawable mEscalatorEscalatorIcon;
   // private Drawable mEscalatorStairIcon;
@@ -1788,29 +2063,28 @@ public class MacroMap extends ScrollView {
   HashMap<String, Integer> mFilledColors = new HashMap<String, Integer>();
   ArrayAdapter<Mall.Floor> mFloorsAdapter;
   private int mFrameBorderColor = Color.BLUE;
-
   private int mFrameBorderSize = 5;
-  private int mFrameFilledColor = Color.LTGRAY;
 
+  private int mFrameFilledColor = Color.LTGRAY;
   Handler mHandler = new Handler();
+
   boolean mHasMoved = false;
   boolean mIsMove = false;
   boolean mIsScale = false;
   float mLastScale;
   float mLastX;
-
   float mLastY;
+
   private Mall mMall;
   private HashMap<String, Mall> mMalls = new HashMap<String, Mall>();
   private int mMapBackgroundColor = Color.WHITE;
   int mMiniumSize = 16;
-
   OnMapEventListener mOnMapEventListener;
 
   OnMapFloorChangedListener mOnMapFloorChangedListener;
+
   int mOrientation = getResources().getConfiguration().orientation;
   private Drawable mPublicServiceAtmIcon;
-
   HashMap<String, String> mPublicServiceIcons = new HashMap<String, String>();
 
   private int mPublicServiceTextColor = Color.BLACK;
@@ -1826,22 +2100,22 @@ public class MacroMap extends ScrollView {
   private int mShopBorderColor = Color.MAGENTA;
 
   private int mShopBorderHightlightColor = Color.GREEN;
-  private int mShopBorderSize = 3;
 
+  private int mShopBorderSize = 3;
   private int mShopFilledColor = Color.YELLOW;
 
   private int mShopFilledHighlightColor = Color.YELLOW;
-
+  private int mShopTextColor = Color.BLACK;
   // Button mButton = new Button(getContext());
   ShopPosition mShopPosition;
-
-  private int mShopTextColor = Color.BLACK;
 
   Spinner mSpinner;
 
   HashMap<String, Integer> mTextColors = new HashMap<String, Integer>();
 
   Typeface mTypeface = Typeface.createFromAsset(getContext().getAssets(), "PalmapPublic.ttf");
+
+  NavigationButtons mNavigationButtons = null;
 
   public MacroMap(Context context) {
     super(context);
@@ -1858,6 +2132,13 @@ public class MacroMap extends ScrollView {
     init(attrs, defStyle);
   }
 
+  public float getFloorHeight() {
+    if (mMall == null || mMall.mFloor == null) {
+      return 0;
+    }
+    return mMall.mFloor.mBorder.height();
+  }
+
   public String getFloorid() {
     if (mMall == null) {
       return null;
@@ -1870,6 +2151,13 @@ public class MacroMap extends ScrollView {
       return null;
     }
     return mMall.getFloorname();
+  }
+
+  public float getFloorWidth() {
+    if (mMall == null || mMall.mFloor == null) {
+      return 0;
+    }
+    return mMall.mFloor.mBorder.width();
   }
 
   public String getMallid() {
@@ -2034,6 +2322,13 @@ public class MacroMap extends ScrollView {
     return mMall.setFloor(id);
   }
 
+  public int setFloor(String id, String name, int index) {
+    if (mMall == null || id == null) {
+      return -1;
+    }
+    return mMall.setFloor(id, name, index);
+  }
+
   // int mLocationX = 0;
   // int mLocationY = 0;
   //
@@ -2046,13 +2341,6 @@ public class MacroMap extends ScrollView {
   // mLocationX = xy[0];
   // mLocationY = xy[1];
   // }
-
-  public int setFloor(String id, String name, int index) {
-    if (mMall == null || id == null) {
-      return -1;
-    }
-    return mMall.setFloor(id, name, index);
-  }
 
   public int setMall(String id) {
     if (id == null) {
@@ -2101,6 +2389,7 @@ public class MacroMap extends ScrollView {
         if (obj != null) {
           String floorid = obj.optString("floor_id");
           setFloor(floorid);
+          redraw();
         }
       }
     }
@@ -2122,13 +2411,41 @@ public class MacroMap extends ScrollView {
     setFloor(floorid);
     if (mMall != null) {
       mMall.setPosition(x, -y);
-      mRedraw = true;
-      invalidate();
+      redraw();
+    }
+  }
+
+  public void setPublicService(boolean highlight) {
+    if (mMall != null) {
+      mMall.setPublicService(highlight);
+      redraw();
+    }
+  }
+
+  public void setPublicService(String type, boolean highlight) {
+    if (mMall != null) {
+      mMall.setPublicService(type, highlight);
+      redraw();
     }
   }
 
   public void setScale(float scale) {
     addScale(scale);
+  }
+
+  public void setShop(String type, boolean highlight) {
+    if (mMall != null) {
+      mMall.setShop(type, highlight);
+      redraw();
+    }
+  }
+
+  public void setShop(String floorid, String shopid) {
+    if (mMall != null) {
+      setFloor(floorid);
+      mMall.setShop(shopid);
+      redraw();
+    }
   }
 
   public void setTextColor(String type, int color) {
@@ -2137,14 +2454,12 @@ public class MacroMap extends ScrollView {
 
   public void zoomin() {
     setScale(2f);
-    mRedraw = true;
-    invalidate();
+    redraw();
   }
 
   public void zoomout() {
     setScale(0.5f);
-    mRedraw = true;
-    invalidate();
+    redraw();
   }
 
   @Override
@@ -2161,7 +2476,7 @@ public class MacroMap extends ScrollView {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-    logd("canvas=" + canvas);
+    // logd("canvas=" + canvas);
     if (mMall != null) {
       mMall.draw(canvas);
     }
@@ -2316,6 +2631,17 @@ public class MacroMap extends ScrollView {
     mPublicServiceIcons.put("27066", "-");
     mPublicServiceIcons.put("27096", "{");
     mPublicServiceIcons.put("27055", "{"); // 问讯处
+
+    mPublicServiceIcons.put("25118", "%"); // 洗手间
+    mPublicServiceIcons.put("25135", "#"); // 扶梯
+    mPublicServiceIcons.put("25134", "$"); // 楼梯
+    mPublicServiceIcons.put("25136", "\""); // 电梯
+    mPublicServiceIcons.put("25062", "'"); // 出入口
+    mPublicServiceIcons.put("25124", "y"); // 自动售货机
+    mPublicServiceIcons.put("25020", "("); // ATM
+    mPublicServiceIcons.put("25076", "-");
+    mPublicServiceIcons.put("25106", "{");
+    mPublicServiceIcons.put("25065", "{"); // 问讯处
     mSpinner = new Spinner(getContext());
     mSpinner.setPrompt("Floors:");
     mFloorsAdapter = new ArrayAdapter<Mall.Floor>(getContext(), android.R.layout.simple_spinner_item, 0, new ArrayList<Mall.Floor>());
@@ -2346,12 +2672,27 @@ public class MacroMap extends ScrollView {
     image.setImageResource(R.drawable.logo);
     image.setAlpha(0.3f);
     linear.addView(image);
+
+    // RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    // mRelativeLayout.addView(view, param);
+    // mRelativeLayout.addView(view);
     // mRelativeLayout.addView(linear);
     mShopPosition = new ShopPosition(getContext(), attrs, defStyle);
     mShopPosition.setVisibility(INVISIBLE);
-    android.widget.RelativeLayout.LayoutParams params =
-        new android.widget.RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     mRelativeLayout.addView(mShopPosition, params);
+
+    mNavigationButtons = new NavigationButtons(getContext(), attrs, defStyle);
+    // RelativeLayout.LayoutParams
+    params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    params.leftMargin = getWidth() - mNavigationButtons.getWidth() / 2;
+    params.topMargin = getHeight() - mNavigationButtons.getHeight();
+    params.leftMargin = 0;
+    params.topMargin = 0;
+    params.width = LayoutParams.WRAP_CONTENT;
+    params.height = LayoutParams.WRAP_CONTENT;
+    mNavigationButtons.setVisibility(INVISIBLE);
+    mRelativeLayout.addView(mNavigationButtons, params);
 
     final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MacroMap, defStyle, 0);
 
@@ -2392,4 +2733,10 @@ public class MacroMap extends ScrollView {
     mAnnotationTextHighlightColor = a.getColor(R.styleable.MacroMap_annotationTextHighlightColor, mAnnotationTextHighlightColor);
     a.recycle();
   }
+
+  // public void setHighlight(String shopid)
+  // {
+  //
+  // }
+
 }
