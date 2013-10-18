@@ -16,7 +16,14 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+
+import android.util.Log;
+
+import android.graphics.Region;
+
+import android.graphics.Rect;
 
 import android.graphics.PointF;
 
@@ -171,8 +178,40 @@ public class MapService {
   }
 
   public List<Shop> getShopsByScope(float x, float y, int scope) {
-    PointF scalePoint = mMap.scalePoint(x, y);
-    return null;
+    Floor floor = getCurFloor();
+    if (floor == null) {
+      return null;
+    }
+    PointF scalePoint = mMap.scalePoint(x, -y);
+    int intX = (int) scalePoint.x;
+    int intY = (int) scalePoint.y;
+    // Log.w("intX & intY", intX + " & " + intY);
+    // int scaleScope = (int) Math.floor(mMap.scaleScope(scope));
+    Rect rect = new Rect(intX - scope, intY - scope, intX + scope, intY + scope);
+    // Log.w("scaleScope", scaleScope + "");
+    Region region = new Region(rect);
+    // Log.w("region rect", region.toString());
+    List<Shop> shops = new ArrayList<Shop>();
+    for (Shop shop : floor.getShops().values()) {
+      if (shop.mBlockRegion == null) {
+        // Log.w("mBlockRegion", "null");
+        continue;
+      }
+      // Log.w("mBlockRegion", "false:" + shop.mBlockRegion.toString() + "--" + shop.mDisplay);
+      // Log.w("region1111", region.toString());
+      if (region.quickReject(shop.mBlockRegion)) {
+        // Log.w("region", region.toString());
+        continue;
+      }
+      shops.add(shop);
+    }
+    Log.w("shops count1111", floor.getShops().values().size() + "");
+    Log.w("shops count", shops.size() + "");
+    //
+    // for (Shop shop : shops) {
+    // Log.w("shop:", shop.getName());
+    // }
+    return shops;
   }
 
   public void initMapData(String mapId, String mapName) {

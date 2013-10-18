@@ -30,10 +30,9 @@ public class Floor extends DrawLayer<JSONObject> {
 
   private int mIndex;
   private String mAlias;
-
   private Canvas shopCanvas;
-  private Canvas textCanvas;
 
+  private Canvas textCanvas;
   public ParseType mParseType = ParseType.Parse;
 
   public Shop mShop;
@@ -62,6 +61,10 @@ public class Floor extends DrawLayer<JSONObject> {
 
   public int getIndex() {
     return mIndex;
+  }
+
+  public HashMap<PointF, Shop> getShops() {
+    return mShops;
   }
 
   @Override

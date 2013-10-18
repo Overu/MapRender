@@ -22,12 +22,18 @@ public class Shop extends DrawLayer<JSONArray> {
   @Override
   public void onInfo(JSONArray jsonArray) {
     mDisplay = jsonArray.optString(0);
+    setName(mDisplay == null || mDisplay.equals("") || mDisplay.equals("null") ? "" : mDisplay);
     JSONArray json = jsonArray.optJSONArray(1);
     if (json != null) {
       mTextCenter = getPoint(json);
     }
     setType(jsonArray.optString(3));
     setId(String.valueOf(jsonArray.optInt(4)));
+  }
+
+  @Override
+  public String toString() {
+    return getName().equals("") ? "no name" : getName();
   }
 
 }

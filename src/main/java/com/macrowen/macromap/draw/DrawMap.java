@@ -6,6 +6,8 @@ import org.json.JSONArray;
 
 import java.util.HashMap;
 
+import android.util.Log;
+
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.graphics.Bitmap;
@@ -89,6 +91,9 @@ public class DrawMap<T> {
   }
 
   public void delegateRefush() {
+    if (delegate == null) {
+      return;
+    }
     delegate.invalidate();
   }
 
@@ -167,6 +172,11 @@ public class DrawMap<T> {
     x = x * mScale + delegateWidth / 2 * (1 - mScale);
     y = y * mScale + delegateHeight / 2 * (1 - mScale);
     return new PointF(x, y);
+  }
+
+  public float scaleScope(int scope) {
+    Log.w("mScale", mScale + "");
+    return mScale * scope;
   }
 
   public void setData(JSONData<T> mData) {

@@ -147,6 +147,7 @@ public class Map extends DrawMap<JSONArray> {
     if (mFloor.mParseType == ParseType.NoParse) {
       return;
     }
+    scale(1);
     Paint paint = new Paint();
     mainLayer = null;
     mainLayer = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
@@ -202,6 +203,9 @@ public class Map extends DrawMap<JSONArray> {
 
   public int setFloor(String id) {
     Floor floor = floors.get(id);
+    if (mCurFloor != null) {
+      mCurFloor.mPosition = null;
+    }
     if (floor == null) {
       return -1;
     } else {
