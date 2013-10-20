@@ -41,7 +41,6 @@ public class Floor extends DrawLayer<JSONObject> {
     setId(id);
     setName(name);
     this.setIndex(index);
-    mShops = new HashMap<PointF, Shop>();
 
     mBorderSize = 3;
     mBorderColor = Color.BLUE;

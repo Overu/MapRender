@@ -410,7 +410,7 @@ public class MacroMap extends ScrollView {
     new Thread(new Runnable() {
       public void run() {
         try {
-          Thread.sleep(100);
+          Thread.sleep(500);
           mHandler.post(new Runnable() {
             public void run() {
               map.reDraw();

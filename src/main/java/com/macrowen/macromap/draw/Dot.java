@@ -14,7 +14,7 @@ public class Dot extends DrawLayer<JSONArray> {
   @Override
   public void onDrawBlock(Canvas canvas) {
   }
-
+  
   @Override
   public void onDrawLine(Canvas canvas) {
   }
