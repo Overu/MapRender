@@ -2,6 +2,8 @@ package com.macrowen.macromap.draw;
 
 import java.util.HashMap;
 
+import android.graphics.Point;
+
 import android.graphics.Typeface;
 
 import android.view.View;
@@ -29,6 +31,8 @@ public class Map extends DrawMap<JSONArray> {
 
   // private Bitmap mMapBitmap;
   private Bitmap mBmp;
+
+  private PointF positionOffset = new PointF();
 
   public Map() {
     floors = new HashMap<String, Floor>();
@@ -165,7 +169,7 @@ public class Map extends DrawMap<JSONArray> {
       return;
     }
     mCurFloor.setPosition(x, y);
-    mCurFloor.setOffset(-x + delegateWidth / 2, -y + delegateHeight / 2);
+    // mCurFloor.setOffset(-x + delegateWidth / 2, -y + delegateHeight / 2);
   }
 
   public void reStory() {

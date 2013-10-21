@@ -168,14 +168,16 @@ public class DrawMap<T> {
 
   public PointF scalePoint(float xed, float yed) {
     float x = xed + mOffset.x;
-    float y = yed + mOffset.y;
+    float y = mBorder.top - yed + mOffset.y;
     x = x * mScale + delegateWidth / 2 * (1 - mScale);
     y = y * mScale + delegateHeight / 2 * (1 - mScale);
+    // x = Math.abs(x * mScale + delegateWidth / 2 * mScale);
+    // y = Math.abs(y * mScale + delegateWidth / 2 * mScale);
     return new PointF(x, y);
   }
 
   public float scaleScope(int scope) {
-    Log.w("mScale", mScale + "");
+    // Log.w("mScale", mScale + "");
     return mScale * scope;
   }
 
@@ -229,8 +231,8 @@ public class DrawMap<T> {
       return;
     }
     // float margin = 5 / 12f;
-    // logd("mRect.width()=" + mRect.width() + ", getWidth()=" +
-    // getWidth());
+    // logd("mRect.width()=" + mRect.width() + ", getWidth()=" + getWidth());
+    // Log.w("setOffset", "mBorder.width()=" + mBorder.width() + ", mBorder.height()=" + mBorder.height());
     if (mBorder.width() * mScale <= delegateWidth) {
       x = -mBorder.left + (delegateWidth - mBorder.width()) / 2;
     } else {
