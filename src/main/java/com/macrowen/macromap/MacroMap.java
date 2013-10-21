@@ -374,7 +374,6 @@ public class MacroMap extends ScrollView {
         break;
       }
     }
-    // mMapService.setFloor(id);
   }
 
   // int mLocationX = 0;
@@ -471,16 +470,16 @@ public class MacroMap extends ScrollView {
       // logd("key=" + (9100 + i) + ", value=" + ((char) i) + "," + ("" +
       // (char) i));
     }
-    mPublicServiceIcons.put("27108", "%"); // 洗手间
-    mPublicServiceIcons.put("27125", "#"); // 扶梯
-    mPublicServiceIcons.put("27124", "$"); // 楼梯
-    mPublicServiceIcons.put("27126", "\""); // 电梯
-    mPublicServiceIcons.put("27052", "'"); // 出入口
-    mPublicServiceIcons.put("27114", "y"); // 自动售货机
+    mPublicServiceIcons.put("27108", "%"); // 娲楁墜闂�
+    mPublicServiceIcons.put("27125", "#"); // 鎵舵
+    mPublicServiceIcons.put("27124", "$"); // 妤兼
+    mPublicServiceIcons.put("27126", "\""); // 鐢垫
+    mPublicServiceIcons.put("27052", "'"); // 鍑哄叆鍙�
+    mPublicServiceIcons.put("27114", "y"); // 鑷姩鍞揣鏈�
     mPublicServiceIcons.put("27010", "("); // ATM
     mPublicServiceIcons.put("27066", "-");
     mPublicServiceIcons.put("27096", "{");
-    mPublicServiceIcons.put("27055", "{"); // 问讯处
+    mPublicServiceIcons.put("27055", "{"); // 闂澶�
     mSpinner = new Spinner(getContext());
     mSpinner.setPrompt("Floors:");
     mFloorsAdapter = new ArrayAdapter<Floor>(getContext(), android.R.layout.simple_spinner_item, 0, new ArrayList<Floor>());
