@@ -1,11 +1,7 @@
 package com.macrowen.macromap.draw;
 
 import java.util.HashMap;
-
-import android.graphics.Point;
-
 import android.graphics.Typeface;
-
 import android.view.View;
 
 import android.graphics.Rect;
@@ -26,13 +22,9 @@ import android.graphics.Bitmap.Config;
 public class Map extends DrawMap<JSONArray> {
 
   private HashMap<String, Floor> floors;
-
   private Floor mCurFloor;
-
   // private Bitmap mMapBitmap;
   private Bitmap mBmp;
-
-  private PointF positionOffset = new PointF();
 
   public Map() {
     floors = new HashMap<String, Floor>();
@@ -71,6 +63,14 @@ public class Map extends DrawMap<JSONArray> {
 
   public HashMap<String, Floor> getFloors() {
     return floors;
+  }
+
+  public PointF getMapOffset() {
+    return mMapOffse;
+  }
+
+  public float getMapScale() {
+    return mMapScale;
   }
 
   public ShopPosition getShopPosition() {
@@ -208,7 +208,7 @@ public class Map extends DrawMap<JSONArray> {
   public int setFloor(String id) {
     Floor floor = floors.get(id);
     if (mCurFloor != null) {
-      mCurFloor.mPosition = null;
+      mPosition = null;
     }
     if (floor == null) {
       return -1;
@@ -254,6 +254,15 @@ public class Map extends DrawMap<JSONArray> {
 
   public void setMapName(String mapName) {
     DrawMap.mMapName = mapName;
+  }
+
+  public void setMapOffset(float x, float y) {
+    mMapOffse.x = x;
+    mMapOffse.y = y;
+  }
+
+  public void setMapScale(float scale) {
+    mMapScale = scale;
   }
 
   public void setPublicService(HashMap<String, String> publicServiceIcons) {

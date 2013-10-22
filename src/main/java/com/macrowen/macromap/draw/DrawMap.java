@@ -5,9 +5,6 @@ import com.macrowen.macromap.draw.data.JSONData;
 import org.json.JSONArray;
 
 import java.util.HashMap;
-
-import android.util.Log;
-
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.graphics.Bitmap;
@@ -36,8 +33,11 @@ public class DrawMap<T> {
   protected static Paint mPaintBlock = new Paint();
   protected static Paint mPaintLine = new Paint();
   protected static Paint mPaintText = new Paint();
+  protected static PointF mMapOffse = new PointF();
+  protected static float mMapScale = 10;
   public static PointF mOffset = new PointF(0, 0);
   public static float mScale = 0.01f;
+  public static PointF mPosition;
 
   protected String mId;
   protected String mName;
@@ -59,7 +59,6 @@ public class DrawMap<T> {
   public RectF mBorder = null;
 
   public PointF mDrawTextPoint;
-  public PointF mPosition;
 
   public float mTextWidth;
   public PointF mTextCenter;
@@ -167,6 +166,11 @@ public class DrawMap<T> {
   }
 
   public PointF scalePoint(float xed, float yed) {
+    if (mMapOffse.x != 0 || mMapOffse.y != 0) {
+      xed = (float) ((xed * mMapScale + mMapOffse.x) / 59.055) * 150;
+      yed = (float) ((yed * mMapScale - mMapOffse.y) / 59.055) * 150;
+    }
+    // Log.w("scalePoint", xed + "--" + yed);
     float x = xed + mOffset.x;
     float y = mBorder.top - yed + mOffset.y;
     x = x * mScale + delegateWidth / 2 * (1 - mScale);
