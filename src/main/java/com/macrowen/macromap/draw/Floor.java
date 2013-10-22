@@ -13,14 +13,18 @@ import android.widget.FrameLayout.LayoutParams;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.PorterDuff.Mode;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
 
 @SuppressLint("DrawAllocation")
 public class Floor extends DrawLayer<JSONObject> {
@@ -94,16 +98,18 @@ public class Floor extends DrawLayer<JSONObject> {
       value.onDrawText(canvas);
     }
 
-    if (mPosition != null) {
-      onDrawPosition(canvas);
-    }
+    // if (mPosition != null) {
+    // onDrawPosition(canvas);
+    // }
     mParseType = ParseType.NoParse;
     if (shopPosition == null) {
       return;
     }
     mDrawType = DrawType.ReDraw;
-    if (mShop != null && mShop.mBlockRegion != null
-        && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
+    if (mShop != null
+        && mShop.mBlockRegion != null
+        && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay
+            .equalsIgnoreCase("null"))) {
       PointF p = mShop.mTextCenter;
       if (p == null) {
         p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
@@ -118,7 +124,8 @@ public class Floor extends DrawLayer<JSONObject> {
       y = Math.max(y, shopPosition.getHeight());
       y = Math.min(y, delegateHeight - shopPosition.getHeight());
       if (mShop.mBlockRegion.contains((int) x, (int) y)) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) shopPosition.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) shopPosition
+            .getLayoutParams();
         params.leftMargin = (int) x - shopPosition.getWidth() / 2;
         params.topMargin = (int) y - shopPosition.getHeight();
         params.width = LayoutParams.WRAP_CONTENT;
@@ -146,20 +153,24 @@ public class Floor extends DrawLayer<JSONObject> {
     Paint paint = new Paint();
     paint.setColor(Color.WHITE);
     recycleBitmap(floorLayer);
-    floorLayer = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
+    floorLayer = Bitmap.createBitmap(delegateWidth * 5 / 3,
+        delegateHeight * 5 / 3, Config.ARGB_8888);
     Canvas c = new Canvas(floorLayer);
     c.translate(delegateWidth / 3, delegateHeight / 3);
     canvas.drawPaint(paint);
     this.drawFloor(c);
-    canvas.drawBitmap(floorLayer, -delegateWidth / 3, -delegateHeight / 3, paint);
+    canvas.drawBitmap(floorLayer, -delegateWidth / 3, -delegateHeight / 3,
+        paint);
 
     this.recycleBitmap(shopLayer);
-    shopLayer = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
+    shopLayer = Bitmap.createBitmap(delegateWidth * 5 / 3,
+        delegateHeight * 5 / 3, Config.ARGB_8888);
     shopCanvas = new Canvas(shopLayer);
     shopCanvas.translate(delegateWidth / 3, delegateHeight / 3);
 
     this.recycleBitmap(textLayer);
-    textLayer = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
+    textLayer = Bitmap.createBitmap(delegateWidth * 5 / 3,
+        delegateHeight * 5 / 3, Config.ARGB_8888);
     textCanvas = new Canvas(textLayer);
     textCanvas.translate(delegateWidth / 3, delegateHeight / 3);
 
@@ -178,13 +189,41 @@ public class Floor extends DrawLayer<JSONObject> {
       }
       drawLayer(value);
     }
-
     canvas.drawBitmap(shopLayer, -delegateWidth / 3, -delegateHeight / 3, null);
     canvas.drawBitmap(textLayer, -delegateWidth / 3, -delegateHeight / 3, null);
   }
 
   @Override
   public void onInfo(JSONArray jsonArray) {
+  }
+
+  public void onDrawPositionLayer(Canvas canvas, boolean isReflush) {
+    if (isReflush) {
+      positionLayer = null;
+      positionLayer = Bitmap.createBitmap(delegateWidth * 5 / 3,
+          delegateHeight * 5 / 3, Config.ARGB_8888);
+      positionCanvas = new Canvas(positionLayer);
+      positionCanvas.translate(delegateWidth / 3, delegateHeight / 3);
+    }
+    positionLayer.eraseColor(Color.TRANSPARENT);
+    onDrawPosition(positionCanvas);
+//    if (isReflush) {
+      canvas.drawBitmap(positionLayer, -delegateWidth / 3, -delegateHeight / 3,
+          null);
+//    }
+  }
+
+  public void onDrawPositionLayerTest() {
+    mPosition.x += 1;
+    mPosition.y += 1;
+    Paint paint  = new Paint();
+    paint.setColor(0xAA8888FF);
+    PointF p = scalePoint(mPosition.x, mPosition.y);
+    float x = p.x;
+    float y = p.y;
+//    positionCanvas = new Canvas(positionLayer);
+    positionCanvas.drawCircle(x, y, 100, paint);
+    onDrawPositionLayer(mainCanvas, false);
   }
 
   public void setAlias(String alias) {
@@ -267,7 +306,8 @@ public class Floor extends DrawLayer<JSONObject> {
     }
 
     if (unit == null) {
-      if (this.mBlockRegion != null && this.mBlockRegion.contains((int) x, (int) y)) {
+      if (this.mBlockRegion != null
+          && this.mBlockRegion.contains((int) x, (int) y)) {
         unit = this;
         mShop = null;
       }
@@ -275,8 +315,10 @@ public class Floor extends DrawLayer<JSONObject> {
     if (unit != null) {
       // unit.setHighlight(!unit.isHightlight());
       // invalidate();
-      if (mShop != null && mShop.mBlockRegion != null
-          && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
+      if (mShop != null
+          && mShop.mBlockRegion != null
+          && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay
+              .equalsIgnoreCase("null"))) {
         PointF p = mShop.mTextCenter;
         if (p == null) {
           p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
@@ -291,7 +333,8 @@ public class Floor extends DrawLayer<JSONObject> {
         y = Math.max(y, shopPosition.getHeight());
         y = Math.min(y, delegateHeight - shopPosition.getHeight());
         if (mShop.mBlockRegion.contains((int) x, (int) y)) {
-          RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) shopPosition.getLayoutParams();
+          RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) shopPosition
+              .getLayoutParams();
           params.leftMargin = (int) x - shopPosition.getWidth() / 2;
           params.topMargin = (int) y - shopPosition.getHeight();
           params.width = LayoutParams.WRAP_CONTENT;
@@ -315,7 +358,7 @@ public class Floor extends DrawLayer<JSONObject> {
 
   @Override
   public String toString() {
-    return DrawLayer.mMapName + " —— " + getName();
+    return DrawLayer.mMapName + " 鈥斺� " + getName();
   }
 
   private void drawFloor(Canvas canvas) {

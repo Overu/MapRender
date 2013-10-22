@@ -30,6 +30,9 @@ public class DrawMap<T> {
   protected static Bitmap floorLayer;
   protected static Bitmap shopLayer;
   protected static Bitmap textLayer;
+  protected static Bitmap positionLayer;
+  protected static Canvas mainCanvas;
+  protected static Canvas positionCanvas;
   protected static Paint mPaintBlock = new Paint();
   protected static Paint mPaintLine = new Paint();
   protected static Paint mPaintText = new Paint();
