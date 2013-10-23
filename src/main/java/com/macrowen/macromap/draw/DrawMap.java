@@ -1,6 +1,7 @@
 package com.macrowen.macromap.draw;
 
 import com.macrowen.macromap.draw.data.JSONData;
+import com.macrowen.macromap.utils.ColorConfigures;
 
 import org.json.JSONArray;
 
@@ -19,8 +20,9 @@ import android.view.View;
 
 public class DrawMap<T> {
 
-  protected static HashMap<String, String> mPublicServiceIcons;
-  protected static Typeface mTypeface;
+  public static HashMap<String, String> mPublicServiceIcons;
+  public static Typeface mTypeface;
+  public static ColorConfigures mColorConfigures;
   protected static String mMapName;
   protected static View delegate;
   protected static ShopPosition shopPosition;
@@ -72,8 +74,8 @@ public class DrawMap<T> {
   public float mLastScale = 1;
   public PointF mLastOffset = new PointF(0, 0);
 
+  public float mBorderSize = 3;
   public int mMapMargin = 100;
-  public int mBorderSize = 3;
   public int mFilledColor = Color.LTGRAY;
   public int mBorderColor = Color.BLACK;
 
@@ -170,8 +172,8 @@ public class DrawMap<T> {
 
   public PointF scalePoint(float xed, float yed) {
     if (mMapOffse.x != 0 || mMapOffse.y != 0) {
-      xed = (float) ((xed * mMapScale + mMapOffse.x) / 59.055) * 150;
-      yed = (float) ((yed * mMapScale - mMapOffse.y) / 59.055) * 150;
+      xed = xed + mMapOffse.x;
+      yed = yed - mMapOffse.y;
     }
     // Log.w("scalePoint", xed + "--" + yed);
     float x = xed + mOffset.x;

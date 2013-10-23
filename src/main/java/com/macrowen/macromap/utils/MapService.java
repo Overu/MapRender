@@ -1,5 +1,6 @@
 package com.macrowen.macromap.utils;
 
+import com.macrowen.macromap.draw.DrawMap;
 import com.macrowen.macromap.draw.Floor;
 import com.macrowen.macromap.draw.Map;
 import com.macrowen.macromap.draw.Shop;
@@ -17,6 +18,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.util.Log;
@@ -97,90 +99,95 @@ public class MapService {
     return INSTANCE;
   }
 
-  private Map mMap;
+  private Map mMall;
+
+  private HashMap<String, Map> mMap = new HashMap<String, Map>();
   private Handler mHandler = new Handler();
   private MapLoadStatusListener mMapLoadStatusListener;
   protected final Object mLock = new Object();
   private Floor mLockValue;
   private Shop nearbyShop;
-
   private OnMapFloorChangedListener mOnMapFloorChangedListener;
 
   private MapService() {
   }
 
+  public void addColorConfigures(ColorConfigures colorConfigures) {
+    DrawMap.mColorConfigures = colorConfigures;
+  }
+
   public void addOffset(float x, float y) {
-    if (mMap != null) {
-      mMap.translate(x, y);
+    if (mMall != null) {
+      mMall.translate(x, y);
       // invalidate();
     }
   }
 
   public void addScale(float scale) {
-    if (mMap != null) {
-      mMap.scale(scale);
+    if (mMall != null) {
+      mMall.scale(scale);
       // invalidate();
     }
   }
 
   public void destory() {
-    mMap = null;
+    mMall = null;
     mLockValue = null;
     System.gc();
   }
 
   public void flrushView() {
-    mMap.setDelegate(null);
-    mMap.setShopPosition(null);
+    mMall.setDelegate(null);
+    mMall.setShopPosition(null);
     // getCurFloor().mPosition = null;
     mOnMapFloorChangedListener = null;
   }
 
   public Floor getCurFloor() {
-    if (mMap == null) {
+    if (mMall == null) {
       return null;
     }
-    return mMap.getCurFloor();
+    return mMall.getCurFloor();
   }
 
   public String getFloorId() {
-    if (mMap == null) {
+    if (mMall == null) {
       return null;
     }
-    return mMap.getFloorid();
+    return mMall.getFloorid();
   }
 
   public String getFloorname() {
-    if (mMap == null) {
+    if (mMall == null) {
       return null;
     }
-    return mMap.getFloorname();
+    return mMall.getFloorname();
   }
 
   public Map getMap() {
-    return mMap;
+    return mMall;
   }
 
   public String getMapId() {
-    if (mMap == null) {
+    if (mMall == null) {
       return null;
     }
-    return mMap.getId();
+    return mMall.getId();
   }
 
   public String getMapName() {
-    if (mMap == null) {
+    if (mMall == null) {
       return null;
     }
-    return mMap.getName();
+    return mMall.getName();
   }
 
   public PointF getMapOffset() {
-    return mMap.getMapOffset();
+    return mMall.getMapOffset();
   }
 
   public float getMapScale() {
-    return mMap.getMapScale();
+    return mMall.getMapScale();
   }
 
   public Shop getNearbyShop(float x, float y, int scope) {
@@ -233,11 +240,11 @@ public class MapService {
   }
 
   public PointF getPostition() {
-    return mMap.mPosition;
+    return mMall.mPosition;
   }
 
   public ShopPosition getShopPosition() {
-    return mMap.getShopPosition();
+    return mMall.getShopPosition();
   }
 
   public List<Shop> getShopsByScope(float x, float y, int scope) {
@@ -285,35 +292,39 @@ public class MapService {
   }
 
   public void initMapData(String mapId, String mapName) {
-    if (mMap == null) {
-      Map map = new Map();
+    Map map = mMap.get(mapId);
+    if (map == null) {
+      map = new Map();
       map.setId(mapId);
       map.setName(mapName);
       map.setMapName(mapName);
-      mMap = map;
+      mMall = map;
+      mMap.put(mapId, map);
       loadMapData(mapId);
+    } else {
+      mMall = map;
     }
-    if (mMap.getCurFloor() != null) {
-      mMapLoadStatusListener.onMapLoadStatusEvent(MapLoadStatus.MapDataLoaded, mMap);
+    if (map.getCurFloor() != null) {
+      mMapLoadStatusListener.onMapLoadStatusEvent(MapLoadStatus.MapDataLoaded, map);
     }
   }
 
   public void parseMapData(final Canvas canvas) {
-    mMap.parseMapData(canvas);
+    mMall.parseMapData(canvas);
   }
 
   public void reDraw() {
-    if (mMap == null) {
+    if (mMall == null) {
       return;
     }
-    mMap.reDraw();
+    mMall.reDraw();
   }
 
   public void reDraw(boolean reDraw) {
-    if (mMap == null) {
+    if (mMall == null) {
       return;
     }
-    mMap.reDraw(reDraw);
+    mMall.reDraw(reDraw);
   }
 
   public void reStory() {
@@ -321,16 +332,16 @@ public class MapService {
   }
 
   public void setDelegateMeasure(int width, int height) {
-    mMap.setDelegateMeasure(width, height);
+    mMall.setDelegateMeasure(width, height);
   }
 
   public int setFloor(String id) {
-    String from = mMap.getFloorid();
-    if (mMap == null || id == null) {
+    String from = mMall.getFloorid();
+    if (mMall == null || id == null) {
       return -1;
     }
     // getCurFloor().mPosition = null;
-    int idx = mMap.setFloor(id) == -2 ? loadFloorData(mMap.getId(), id) : 1;
+    int idx = mMall.setFloor(id) == -2 ? loadFloorData(mMall.getId(), id) : 1;
     if (!id.equals(from)) {
       if (idx == 1) {
         this.completeData();
@@ -343,11 +354,11 @@ public class MapService {
   }
 
   public void setMapOffset(float x, float y) {
-    mMap.setMapOffset(x, y);
+    mMall.setMapOffset(x, y);
   }
 
   public void setMapScale(float scale) {
-    mMap.setMapScale(scale);
+    mMall.setMapScale(scale);
   }
 
   public void setOnMapEventListener(OnMapEventListener onMapEventListener) {
@@ -367,16 +378,16 @@ public class MapService {
 
   public void setPosition(String floorid, float x, float y) {
     int idx = setFloor(floorid);
-    mMap.position(x, -y);
-    if (mMap != null && idx != 0) {
-      mMap.reDraw();
-      mMap.delegateRefush();
+    mMall.position(x, -y);
+    if (mMall != null && idx != 0) {
+      mMall.reDraw();
+      mMall.delegateRefush();
     }
   }
 
   public void setPositionLazy(String floorid, float x, float y) {
     setFloor(floorid);
-    mMap.position(x, -y);
+    mMall.position(x, -y);
   }
 
   public void setPositionTest(String floorid, float x, float y) {
@@ -384,38 +395,38 @@ public class MapService {
     // Log.w("setPositionTest", x + "-" + y);
     // float dx = (float) ((x + mapOffset.x) / 59.055) * 150;
     // float dy = (float) ((y + mapOffset.y) / 59.055) * 150;
-    mMap.position(x, -y);
-    if (mMap != null && idx != 0) {
-      mMap.reDraw();
-      mMap.delegateRefush();
+    mMall.position(x, -y);
+    if (mMall != null && idx != 0) {
+      mMall.reDraw();
+      mMall.delegateRefush();
     }
   }
 
   public void setShopPosition(ShopPosition shopPosition) {
-    mMap.setShopPosition(shopPosition);
+    mMall.setShopPosition(shopPosition);
   }
 
   public void setViewDelegate(View view) {
-    if (mMap == null) {
+    if (mMall == null) {
       return;
     }
-    mMap.setDelegate(view);
+    mMall.setDelegate(view);
   }
 
   public void showShopPosition(float x, float y) {
-    mMap.showShopPosition(x, y);
+    mMall.showShopPosition(x, y);
   }
 
   public void zoomin() {
     addScale(2f);
-    mMap.reDraw();
-    mMap.delegateRefush();
+    mMall.reDraw();
+    mMall.delegateRefush();
   }
 
   public void zoomout() {
     addScale(0.5f);
-    mMap.reDraw();
-    mMap.delegateRefush();
+    mMall.reDraw();
+    mMall.delegateRefush();
   }
 
   protected int downloadJson(String u, File file) {
@@ -465,7 +476,7 @@ public class MapService {
       if (index == 0) {
         floorid = id;
       }
-      mMap.setFloor(id, name, index);
+      mMall.setFloor(id, name, index);
     }
     setFloor(floorid);
     return 0;
@@ -500,7 +511,8 @@ public class MapService {
       input.close();
       String json = EncodingUtils.getString(buf, "UTF-8");
       JSONArray obj = new JSONArray(json);
-      mMap.setData(new com.macrowen.macromap.draw.data.JSONArray(obj));
+      final Map mall = mMap.get(mapId);
+      mall.setData(new com.macrowen.macromap.draw.data.JSONArray(obj));
       setFloor(obj);
       synchronized (mLock) {
         if (mLockValue == null) {
@@ -509,7 +521,7 @@ public class MapService {
         mHandler.post(new Runnable() {
           public void run() {
             if (mMapLoadStatusListener != null) {
-              mMapLoadStatusListener.onMapLoadStatusEvent(MapLoadStatus.MapDataInit, mMap);
+              mMapLoadStatusListener.onMapLoadStatusEvent(MapLoadStatus.MapDataInit, mall);
             }
           }
         });
@@ -522,10 +534,10 @@ public class MapService {
   }
 
   private int completeData() {
-    if (mMap.getDelegate() != null) {
+    if (mMall.getDelegate() != null) {
       mHandler.post(new Runnable() {
         public void run() {
-          mMap.reDraw();
+          mMall.reDraw();
           addScale(1);
         }
       });

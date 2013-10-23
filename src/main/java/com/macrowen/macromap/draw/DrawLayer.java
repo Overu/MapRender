@@ -10,18 +10,14 @@ import android.graphics.Paint.Align;
 import android.graphics.PointF;
 
 import android.graphics.Paint.Style;
-import android.graphics.PorterDuff.Mode;
 
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Region.Op;
-import android.graphics.Xfermode;
 
 import android.graphics.Canvas;
 
@@ -62,8 +58,7 @@ public class DrawLayer<T> extends DrawMap<T> {
       float scale = mScale;
       matrix.setScale(scale, scale, delegateWidth / 2, delegateHeight / 2);
       path.transform(matrix);
-      Rect rect = new Rect(-delegateWidth / 3, -delegateHeight / 3,
-          delegateWidth * 4 / 3, delegateHeight * 4 / 3);
+      Rect rect = new Rect(-delegateWidth / 3, -delegateHeight / 3, delegateWidth * 4 / 3, delegateHeight * 4 / 3);
       RectF rectf = new RectF();
       path.computeBounds(rectf, false);
       Region region = new Region(rect);
@@ -137,17 +132,15 @@ public class DrawLayer<T> extends DrawMap<T> {
         PointF center = getPoint(json.optJSONArray(4));
         float startAngle = -(float) json.optDouble(5);
         float sweepAngle = -(float) json.optDouble(6);
-        RectF oval = new RectF(center.x - rx, center.y - ry, center.x + rx,
-            center.y + ry);
+        RectF oval = new RectF(center.x - rx, center.y - ry, center.x + rx, center.y + ry);
         linecount++;
         if (linecount > 0) {// && linecount < 6) {
-          point = new PointF((float) (center.x + rx
-              * Math.cos(startAngle + sweepAngle)), (float) (center.y + ry
-              * Math.sin(startAngle + sweepAngle)));
+          point =
+              new PointF((float) (center.x + rx * Math.cos(startAngle + sweepAngle)), (float) (center.y + ry
+                  * Math.sin(startAngle + sweepAngle)));
           points[linecount] = point;
           if (linecount > 1) {
-            if (threepointsoneline(points[linecount], points[linecount - 1],
-                points[linecount - 2])) {
+            if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
               points[linecount - 1] = points[linecount];
               linecount--;
             }
@@ -172,8 +165,7 @@ public class DrawLayer<T> extends DrawMap<T> {
         if (linecount > 0) {// && linecount < 6) {
           points[linecount] = point;
           if (linecount > 1) {
-            if (threepointsoneline(points[linecount], points[linecount - 1],
-                points[linecount - 2])) {
+            if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
               points[linecount - 1] = points[linecount];
               linecount--;
               // logd("linecount=" + linecount);
@@ -225,11 +217,8 @@ public class DrawLayer<T> extends DrawMap<T> {
         mTextPath.moveTo(x2, y2);
         mTextPath.lineTo(x1, y1);
       }
-      mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)
-          * (y1 - y2));
-    } else if (index > 0
-        && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay
-            .equalsIgnoreCase("null")))) {
+      mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    } else if (index > 0 && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay.equalsIgnoreCase("null")))) {
       // logd("mDisplay=" + mDisplay);
       Path path = new Path();
       float x1, x2, y1, y2;
@@ -273,10 +262,8 @@ public class DrawLayer<T> extends DrawMap<T> {
       Path p = new Path();
       p.moveTo(rect.centerX() - (x2 - x1) / 10, rect.centerY() - (y2 - y1) / 10);
       p.lineTo(rect.centerX() + (x2 - x1) / 10, rect.centerY() + (y2 - y1) / 10);
-      p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY() + (y2 - y1)
-          / 10 + dy);
-      p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY() - (y2 - y1)
-          / 10 + dy);
+      p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY() + (y2 - y1) / 10 + dy);
+      p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY() - (y2 - y1) / 10 + dy);
       rg = new Region(rect);
       rg.setPath(p, region);
       p.close();
@@ -290,8 +277,7 @@ public class DrawLayer<T> extends DrawMap<T> {
       matrix.setScale(10, 10);
       mTextPath.transform(matrix);
       // rect = rg.getBounds();
-      mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width()
-          + rect.height() * rect.height());
+      mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width() + rect.height() * rect.height());
       mTextPath = null;
     }
     // mRegion = new Region();
@@ -307,8 +293,7 @@ public class DrawLayer<T> extends DrawMap<T> {
     PointF p = scalePoint(mPosition.x, mPosition.y);
     float x = p.x;
     float y = p.y;
-    if (x < -delegateWidth / 3 || x > delegateWidth * 4 / 3
-        || y < -delegateHeight / 3 || y > delegateHeight * 4 / 3) {
+    if (x < -delegateWidth / 3 || x > delegateWidth * 4 / 3 || y < -delegateHeight / 3 || y > delegateHeight * 4 / 3) {
       return;
     }
     Paint paint = mPaintText;
@@ -333,8 +318,7 @@ public class DrawLayer<T> extends DrawMap<T> {
     if (mDrawType == DrawType.NoDraw) {
       return;
     }
-    if (mDisplay == null || mDisplay.trim().equals("")
-        || mDisplay.equalsIgnoreCase("null")) {
+    if (mDisplay == null || mDisplay.trim().equals("") || mDisplay.equalsIgnoreCase("null")) {
       mDrawType = DrawType.ReDraw;
       return;
     }
@@ -377,11 +361,9 @@ public class DrawLayer<T> extends DrawMap<T> {
         }
         Rect r;
         if (rect.width() > rect.height() * 0.9) {
-          r = new Rect((int) rect.left, (int) (point.y - 1), (int) rect.right,
-              (int) (point.y + 1));
+          r = new Rect((int) rect.left, (int) (point.y - 1), (int) rect.right, (int) (point.y + 1));
         } else {
-          r = new Rect((int) (point.x - 1), (int) rect.top,
-              (int) (point.x + 1), (int) rect.bottom);
+          r = new Rect((int) (point.x - 1), (int) rect.top, (int) (point.x + 1), (int) rect.bottom);
         }
         Region rg = new Region(region);
         rg.op(r, region, Op.INTERSECT);
@@ -399,11 +381,9 @@ public class DrawLayer<T> extends DrawMap<T> {
         paint.setTextSize(size);
         width = paint.measureText(mDisplay);
         if (rect.width() > rect.height() * 0.8) {
-          r = new Rect((int) (point.x - width / 2), (int) (point.y - size * 4),
-              (int) (point.x + width / 2), (int) (point.y + size * 4));
+          r = new Rect((int) (point.x - width / 2), (int) (point.y - size * 4), (int) (point.x + width / 2), (int) (point.y + size * 4));
         } else {
-          r = new Rect((int) (point.x - size * 4), (int) (point.y - width / 2),
-              (int) (point.x + size * 4), (int) (point.y + width / 2));
+          r = new Rect((int) (point.x - size * 4), (int) (point.y - width / 2), (int) (point.x + size * 4), (int) (point.y + width / 2));
         }
         rg = new Region(region);
         rg.op(r, region, Op.INTERSECT);
@@ -460,8 +440,7 @@ public class DrawLayer<T> extends DrawMap<T> {
     paint.setStyle(Style.FILL);
     paint.setTextAlign(Align.CENTER);
     paint.setColor(mTextColor);
-    canvas.drawTextOnPath(mDisplay, mDrawTextPath, 0, mDrawTextSize / 2.4f,
-        paint);
+    canvas.drawTextOnPath(mDisplay, mDrawTextPath, 0, mDrawTextSize / 2.4f, paint);
   }
 
   @Override
