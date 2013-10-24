@@ -36,15 +36,12 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,7 +49,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -143,8 +139,7 @@ public class MacroMap extends ScrollView {
       if (mConfigures == null || name == null) {
         return "";
       }
-      JSONObject json = mConfigures.optJSONObject("shop").optJSONObject(
-          "category");
+      JSONObject json = mConfigures.optJSONObject("shop").optJSONObject("category");
       if (json == null) {
         return "";
       }
@@ -189,9 +184,9 @@ public class MacroMap extends ScrollView {
     public void run() {
       try {
         mFile = Environment.getExternalStorageDirectory();
-        mFile = new File(mFile, "/Palmap/MacroMap/"
-            + Base64.encodeToString(mUrl.getBytes(), Base64.URL_SAFE
-                | Base64.NO_PADDING | Base64.NO_WRAP));
+        mFile =
+            new File(mFile, "/Palmap/MacroMap/"
+                + Base64.encodeToString(mUrl.getBytes(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
         logd("url=" + mUrl + ", file=" + mFile.getAbsolutePath());
         if (mFile.length() < 4) {
           mFile.getParentFile().mkdirs();
@@ -302,8 +297,7 @@ public class MacroMap extends ScrollView {
             float scale = mScale;
             matrix.setScale(scale, scale, getWidth() / 2, getHeight() / 2);
             path.transform(matrix);
-            Rect rect = new Rect(-getWidth() / 3, -getHeight() / 3,
-                getWidth() * 4 / 3, getHeight() * 4 / 3);
+            Rect rect = new Rect(-getWidth() / 3, -getHeight() / 3, getWidth() * 4 / 3, getHeight() * 4 / 3);
             RectF rectf = new RectF();
             path.computeBounds(rectf, false);
             Region region = new Region(rect);
@@ -350,8 +344,7 @@ public class MacroMap extends ScrollView {
           if (mDrawType == DrawType.NoDraw) {
             return;
           }
-          if (mDisplay == null || mDisplay.trim().equals("")
-              || mDisplay.equalsIgnoreCase("null")) {
+          if (mDisplay == null || mDisplay.trim().equals("") || mDisplay.equalsIgnoreCase("null")) {
             mDrawType = DrawType.ReDraw;
             return;
           }
@@ -394,11 +387,9 @@ public class MacroMap extends ScrollView {
               }
               Rect r;
               if (rect.width() > rect.height() * 0.9) {
-                r = new Rect((int) rect.left, (int) (point.y - 1),
-                    (int) rect.right, (int) (point.y + 1));
+                r = new Rect((int) rect.left, (int) (point.y - 1), (int) rect.right, (int) (point.y + 1));
               } else {
-                r = new Rect((int) (point.x - 1), (int) rect.top,
-                    (int) (point.x + 1), (int) rect.bottom);
+                r = new Rect((int) (point.x - 1), (int) rect.top, (int) (point.x + 1), (int) rect.bottom);
               }
               Region rg = new Region(region);
               rg.op(r, region, Op.INTERSECT);
@@ -416,13 +407,13 @@ public class MacroMap extends ScrollView {
               paint.setTextSize(size);
               width = paint.measureText(mDisplay);
               if (rect.width() > rect.height() * 0.8) {
-                r = new Rect((int) (point.x - width / 2),
-                    (int) (point.y - size * 4), (int) (point.x + width / 2),
-                    (int) (point.y + size * 4));
+                r =
+                    new Rect((int) (point.x - width / 2), (int) (point.y - size * 4), (int) (point.x + width / 2),
+                        (int) (point.y + size * 4));
               } else {
-                r = new Rect((int) (point.x - size * 4),
-                    (int) (point.y - width / 2), (int) (point.x + size * 4),
-                    (int) (point.y + width / 2));
+                r =
+                    new Rect((int) (point.x - size * 4), (int) (point.y - width / 2), (int) (point.x + size * 4),
+                        (int) (point.y + width / 2));
               }
               rg = new Region(region);
               rg.op(r, region, Op.INTERSECT);
@@ -430,8 +421,7 @@ public class MacroMap extends ScrollView {
               // logd("" + rect + r);
               rect = r;
               region = rg;
-              w = (rect.width() > rect.height() * 0.8) ? rect.width() : rect
-                  .height();
+              w = (rect.width() > rect.height() * 0.8) ? rect.width() : rect.height();
               width = paint.measureText(mDisplay);
               if (width > w) {
                 size *= w / width;
@@ -488,8 +478,7 @@ public class MacroMap extends ScrollView {
           paint.setStyle(Style.FILL);
           paint.setTextAlign(Align.CENTER);
           paint.setColor(mHighlight ? mTextHighlightColor : mTextColor);
-          canvas.drawTextOnPath(mDisplay, mDrawTextPath, 0,
-              mDrawTextSize / 2.4f, paint);
+          canvas.drawTextOnPath(mDisplay, mDrawTextPath, 0, mDrawTextSize / 2.4f, paint);
         }
 
         @Override
@@ -506,7 +495,9 @@ public class MacroMap extends ScrollView {
         @Override
         void setPath(JSONArray jsonArray) {
           // logd("mDisplay=" + mDisplay);
-          mPath = new Path();
+          if (mPath == null) {
+            mPath = new Path();
+          }
           PointF point = new PointF(0, 0);
           int linecount = 0;
           PointF points[] = new PointF[jsonArray.length()];
@@ -538,17 +529,15 @@ public class MacroMap extends ScrollView {
               PointF center = getPoint(json.optJSONArray(4));
               float startAngle = -(float) json.optDouble(5);
               float sweepAngle = -(float) json.optDouble(6);
-              RectF oval = new RectF(center.x - rx, center.y - ry, center.x
-                  + rx, center.y + ry);
+              RectF oval = new RectF(center.x - rx, center.y - ry, center.x + rx, center.y + ry);
               linecount++;
               if (linecount > 0) {// && linecount < 6) {
-                point = new PointF((float) (center.x + rx
-                    * Math.cos(startAngle + sweepAngle)),
-                    (float) (center.y + ry * Math.sin(startAngle + sweepAngle)));
+                point =
+                    new PointF((float) (center.x + rx * Math.cos(startAngle + sweepAngle)), (float) (center.y + ry
+                        * Math.sin(startAngle + sweepAngle)));
                 points[linecount] = point;
                 if (linecount > 1) {
-                  if (threepointsoneline(points[linecount],
-                      points[linecount - 1], points[linecount - 2])) {
+                  if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
                     points[linecount - 1] = points[linecount];
                     linecount--;
                   }
@@ -573,8 +562,7 @@ public class MacroMap extends ScrollView {
               if (linecount > 0) {// && linecount < 6) {
                 points[linecount] = point;
                 if (linecount > 1) {
-                  if (threepointsoneline(points[linecount],
-                      points[linecount - 1], points[linecount - 2])) {
+                  if (threepointsoneline(points[linecount], points[linecount - 1], points[linecount - 2])) {
                     points[linecount - 1] = points[linecount];
                     linecount--;
                     // logd("linecount=" + linecount);
@@ -626,11 +614,8 @@ public class MacroMap extends ScrollView {
               mTextPath.moveTo(x2, y2);
               mTextPath.lineTo(x1, y1);
             }
-            mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)
-                * (y1 - y2));
-          } else if (index > 0
-              && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay
-                  .equalsIgnoreCase("null")))) {
+            mTextWidth = (float) Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+          } else if (index > 0 && (!(mDisplay == null || mDisplay.trim().equals("") || mDisplay.equalsIgnoreCase("null")))) {
             // logd("mDisplay=" + mDisplay);
             Path path = new Path();
             float x1, x2, y1, y2;
@@ -672,14 +657,10 @@ public class MacroMap extends ScrollView {
               dy = 1;
             }
             Path p = new Path();
-            p.moveTo(rect.centerX() - (x2 - x1) / 10, rect.centerY()
-                - (y2 - y1) / 10);
-            p.lineTo(rect.centerX() + (x2 - x1) / 10, rect.centerY()
-                + (y2 - y1) / 10);
-            p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY()
-                + (y2 - y1) / 10 + dy);
-            p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY()
-                - (y2 - y1) / 10 + dy);
+            p.moveTo(rect.centerX() - (x2 - x1) / 10, rect.centerY() - (y2 - y1) / 10);
+            p.lineTo(rect.centerX() + (x2 - x1) / 10, rect.centerY() + (y2 - y1) / 10);
+            p.lineTo(rect.centerX() + (x2 - x1) / 10 + dx, rect.centerY() + (y2 - y1) / 10 + dy);
+            p.lineTo(rect.centerX() - (x2 - x1) / 10 + dx, rect.centerY() - (y2 - y1) / 10 + dy);
             rg = new Region(rect);
             rg.setPath(p, region);
             p.close();
@@ -693,8 +674,7 @@ public class MacroMap extends ScrollView {
             matrix.setScale(10, 10);
             mTextPath.transform(matrix);
             // rect = rg.getBounds();
-            mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width()
-                + rect.height() * rect.height());
+            mTextWidth = 10 * (float) Math.sqrt(rect.width() * rect.width() + rect.height() * rect.height());
             mTextPath = null;
           }
           // mRegion = new Region();
@@ -757,17 +737,14 @@ public class MacroMap extends ScrollView {
             float y = mStart.y + mOffset.y;
             x = x * mScale + getWidth() / 2 * (1 - mScale);
             y = y * mScale + getHeight() / 2 * (1 - mScale);
-            if (x < -getWidth() / 3 || x > getWidth() * 4 / 3
-                || y < -getHeight() / 3 || y > getHeight() * 4 / 3) {
+            if (x < -getWidth() / 3 || x > getWidth() * 4 / 3 || y < -getHeight() / 3 || y > getHeight() * 4 / 3) {
               mDrawType = DrawType.NoDraw;
               return;
             }
             mDrawTextSize = size;
             mDrawTextPoint = new PointF(x, y);
             mRegion = new Region();
-            mRegion.set((int) (mDrawTextPoint.x - size / 2),
-                (int) (mDrawTextPoint.y - size / 2),
-                (int) (mDrawTextPoint.x + size / 2),
+            mRegion.set((int) (mDrawTextPoint.x - size / 2), (int) (mDrawTextPoint.y - size / 2), (int) (mDrawTextPoint.x + size / 2),
                 (int) (mDrawTextPoint.y + size / 2));
           }
           Paint paint = mPaintText;
@@ -775,8 +752,7 @@ public class MacroMap extends ScrollView {
           paint.setTypeface(mTypeface);
           paint.setTextSize(mDrawTextSize);
           paint.setTextAlign(Align.CENTER);
-          canvas.drawText(text, mDrawTextPoint.x, mDrawTextPoint.y
-              + mDrawTextSize * 0.4f, paint);
+          canvas.drawText(text, mDrawTextPoint.x, mDrawTextPoint.y + mDrawTextSize * 0.4f, paint);
           mDrawType = DrawType.ReDraw;
         }
 
@@ -899,8 +875,7 @@ public class MacroMap extends ScrollView {
             super(start);
           }
 
-          void arcTo(PointF center, float rx, float ry, float angleStart,
-              float angleSweep) {
+          void arcTo(PointF center, float rx, float ry, float angleStart, float angleSweep) {
             mCenter = center;
             mRadiusX = rx;
             mRadiusY = ry;
@@ -993,10 +968,9 @@ public class MacroMap extends ScrollView {
           mBorderColor = mShopBorderColor;
           mBorderHightlightColor = mShopBorderHightlightColor;
           mFilledColor = mShopFilledColor;
-          mFilledColor = (int) Math.round(Math.random() * 32 + 224)
-              + (int) Math.round(Math.random() * 32 + 224) * 256
-              + (int) Math.round(Math.random() * 32 + 224) * 256 * 256
-              + (int) Math.round(Math.random() * 32 + 224) * 256 * 256 * 256;
+          mFilledColor =
+              (int) Math.round(Math.random() * 32 + 224) + (int) Math.round(Math.random() * 32 + 224) * 256
+                  + (int) Math.round(Math.random() * 32 + 224) * 256 * 256 + (int) Math.round(Math.random() * 32 + 224) * 256 * 256 * 256;
           mFilledHightlightColor = mShopFilledHighlightColor;
           mTextColor = mShopTextColor;
           mBorderSize = mShopBorderSize;
@@ -1232,10 +1206,8 @@ public class MacroMap extends ScrollView {
         if (unit != null) {
           // unit.setHighlight(!unit.isHightlight());
           // invalidate();
-          if (mShop != null
-              && mShop.mRegion != null
-              && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay
-                  .equalsIgnoreCase("null"))) {
+          if (mShop != null && mShop.mRegion != null
+              && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
             PointF p = mShop.mTextCenter;
             if (p == null) {
               p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
@@ -1250,8 +1222,7 @@ public class MacroMap extends ScrollView {
             y = Math.max(y, mShopPosition.getHeight());
             y = Math.min(y, getHeight() - mShopPosition.getHeight());
             if (mShop.mRegion.contains((int) x, (int) y)) {
-              RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShopPosition
-                  .getLayoutParams();
+              RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShopPosition.getLayoutParams();
               params.leftMargin = (int) x - mShopPosition.getWidth() / 2;
               params.topMargin = (int) y - mShopPosition.getHeight();
               params.width = LayoutParams.WRAP_CONTENT;
@@ -1349,10 +1320,8 @@ public class MacroMap extends ScrollView {
           unit.drawText(canvas);
         }
         mDrawType = DrawType.ReDraw;
-        if (mShop != null
-            && mShop.mRegion != null
-            && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay
-                .equalsIgnoreCase("null"))) {
+        if (mShop != null && mShop.mRegion != null
+            && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
           PointF p = mShop.mTextCenter;
           if (p == null) {
             p = new PointF(mShop.mRect.centerX(), mShop.mRect.centerY());
@@ -1367,8 +1336,7 @@ public class MacroMap extends ScrollView {
           y = Math.max(y, mShopPosition.getHeight());
           y = Math.min(y, getHeight() - mShopPosition.getHeight());
           if (mShop.mRegion.contains((int) x, (int) y)) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShopPosition
-                .getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShopPosition.getLayoutParams();
             params.leftMargin = (int) x - mShopPosition.getWidth() / 2;
             params.topMargin = (int) y - mShopPosition.getHeight();
             params.width = LayoutParams.WRAP_CONTENT;
@@ -1552,8 +1520,7 @@ public class MacroMap extends ScrollView {
         float y = mPosition.y + mOffset.y;
         x = x * mScale + getWidth() / 2 * (1 - mScale);
         y = y * mScale + getHeight() / 2 * (1 - mScale);
-        if (x < -getWidth() / 3 || x > getWidth() * 4 / 3
-            || y < -getHeight() / 3 || y > getHeight() * 4 / 3) {
+        if (x < -getWidth() / 3 || x > getWidth() * 4 / 3 || y < -getHeight() / 3 || y > getHeight() * 4 / 3) {
           return;
         }
         Paint paint = mPaintText;
@@ -1577,8 +1544,7 @@ public class MacroMap extends ScrollView {
             if (u.mRegion != null && u.mRegion.contains((int) x, (int) y)) {
               unit = u;
               // mShop = u;
-              Poi poi = new Poi(unit.mId, unit.mDisplay, unit.mType,
-                  unit.mHighlight);
+              Poi poi = new Poi(unit.mId, unit.mDisplay, unit.mType, unit.mHighlight);
               return poi;
             }
           }
@@ -1651,8 +1617,7 @@ public class MacroMap extends ScrollView {
           // x = Math.max(x, -mBorder.right + getWidth() / 2 + getWidth() /
           // mScale * margin);
           x = Math.min(x, -mBorder.left + getWidth() / 2 - mMapMargin / mScale);
-          x = Math
-              .max(x, -mBorder.right + getWidth() / 2 + mMapMargin / mScale);
+          x = Math.max(x, -mBorder.right + getWidth() / 2 + mMapMargin / mScale);
         }
         if (mBorder.height() * mScale <= getHeight()) {
           y = -mBorder.top + (getHeight() - mBorder.height()) / 2;
@@ -1662,8 +1627,7 @@ public class MacroMap extends ScrollView {
           // y = Math.max(y, -mBorder.bottom + getHeight() / 2 + getHeight() /
           // mScale * margin);
           y = Math.min(y, -mBorder.top + getHeight() / 2 - mMapMargin / mScale);
-          y = Math.max(y, -mBorder.bottom + getHeight() / 2 + mMapMargin
-              / mScale);
+          y = Math.max(y, -mBorder.bottom + getHeight() / 2 + mMapMargin / mScale);
         }
         mOffset = new PointF(x, y);
         // setPath();
@@ -1686,9 +1650,7 @@ public class MacroMap extends ScrollView {
         if (mBorder == null) {
           return;
         }
-        scale = Math.max(scale, Math.min(
-            (getWidth() - mMapMargin) / mBorder.width(),
-            (getHeight() - mMapMargin) / mBorder.height()));
+        scale = Math.max(scale, Math.min((getWidth() - mMapMargin) / mBorder.width(), (getHeight() - mMapMargin) / mBorder.height()));
         if (Float.isInfinite(scale) || Float.isNaN(scale)) {
           return;
         }
@@ -1697,8 +1659,7 @@ public class MacroMap extends ScrollView {
       }
 
       void setShop(String shopid) {
-        if (shopid == null || mShops == null || shopid.isEmpty()
-            || mShops.isEmpty()) {
+        if (shopid == null || mShops == null || shopid.isEmpty() || mShops.isEmpty()) {
           return;
         }
         for (Mall.Floor.Shop shop : mMall.mFloor.mShops.values()) {
@@ -1707,13 +1668,10 @@ public class MacroMap extends ScrollView {
             RectF rectf = new RectF();
             mShop.mDrawPath.computeBounds(rectf, false);
             if (mShop.mDrawTextSize < mMiniumSize) {
-              float scale = mScale
-                  * Math.min(getWidth() / 3 / rectf.width(), getHeight() / 3
-                      / rectf.height());
+              float scale = mScale * Math.min(getWidth() / 3 / rectf.width(), getHeight() / 3 / rectf.height());
               setScale(scale);
             }
-            setOffset(-mShop.mRect.centerX() + getWidth() / 2,
-                -mShop.mRect.centerY() + getHeight() / 2);
+            setOffset(-mShop.mRect.centerX() + getWidth() / 2, -mShop.mRect.centerY() + getHeight() / 2);
             break;
           }
         }
@@ -1788,8 +1746,7 @@ public class MacroMap extends ScrollView {
         if (mRedraw) {
           mRedraw = false;
           mDrawTimes = 0;
-          mBmp = Bitmap.createBitmap(getWidth() * 5 / 3, getHeight() * 5 / 3,
-              Config.ARGB_8888);
+          mBmp = Bitmap.createBitmap(getWidth() * 5 / 3, getHeight() * 5 / 3, Config.ARGB_8888);
           Canvas cc = new Canvas(mBmp);
           cc.translate(getWidth() / 3, getHeight() / 3);
           float scale = mFloor.mScale;
@@ -1798,8 +1755,7 @@ public class MacroMap extends ScrollView {
           mFloor.draw(cc);
           mFloor.mScale = scale;
           mFloor.mDrawType = DrawType.Draw;
-          mBitmap = Bitmap.createBitmap(getWidth() * 5 / 3,
-              getHeight() * 5 / 3, Config.ARGB_8888);
+          mBitmap = Bitmap.createBitmap(getWidth() * 5 / 3, getHeight() * 5 / 3, Config.ARGB_8888);
           Canvas c = new Canvas(mBitmap);
           c.translate(getWidth() / 3, getHeight() / 3);
           mFloor.draw(c);
@@ -1812,15 +1768,14 @@ public class MacroMap extends ScrollView {
           {
             float lastScale = mFloor.mLastScale / 2;
             Rect rect = new Rect(0, 0, getWidth() * 5 / 3, getHeight() * 5 / 3);
-            float x = (mFloor.mOffset.x - mFloor.mLastOffset.x) * mFloor.mScale
-                - getWidth() / 2 * (mFloor.mScale - lastScale) / lastScale
-                - getWidth() / 3 * mFloor.mScale / lastScale;
-            float y = (mFloor.mOffset.y - mFloor.mLastOffset.y) * mFloor.mScale
-                - getHeight() / 2 * (mFloor.mScale - lastScale) / lastScale
-                - getHeight() / 3 * mFloor.mScale / lastScale;
-            RectF rectf = new RectF(x, y, x + getWidth() * 5 / 3
-                * mFloor.mScale / lastScale, y + getHeight() * 5 / 3
-                * mFloor.mScale / lastScale);
+            float x =
+                (mFloor.mOffset.x - mFloor.mLastOffset.x) * mFloor.mScale - getWidth() / 2 * (mFloor.mScale - lastScale) / lastScale
+                    - getWidth() / 3 * mFloor.mScale / lastScale;
+            float y =
+                (mFloor.mOffset.y - mFloor.mLastOffset.y) * mFloor.mScale - getHeight() / 2 * (mFloor.mScale - lastScale) / lastScale
+                    - getHeight() / 3 * mFloor.mScale / lastScale;
+            RectF rectf =
+                new RectF(x, y, x + getWidth() * 5 / 3 * mFloor.mScale / lastScale, y + getHeight() * 5 / 3 * mFloor.mScale / lastScale);
             // logd("mLastScale="+mLastScale+", ")
             // logd("getWidth() * 5 / 3 * mFloor.mScale / lastScale="
             // + (getWidth() * 5 / 3 * mFloor.mScale / lastScale));
@@ -1828,19 +1783,16 @@ public class MacroMap extends ScrollView {
             canvas.drawBitmap(mBmp, rect, rectf, paint);
           }
           float w = 5;
-          Rect rect = new Rect((int) w, (int) w, getWidth() * 5 / 3 - (int) w,
-              getHeight() * 5 / 3 - (int) w);
-          float x = (mFloor.mOffset.x - mFloor.mLastOffset.x) * mFloor.mScale
-              - getWidth() / 2 * (mFloor.mScale - mFloor.mLastScale)
-              / mFloor.mLastScale - getWidth() / 3 * mFloor.mScale
-              / mFloor.mLastScale + w * mFloor.mScale;
-          float y = (mFloor.mOffset.y - mFloor.mLastOffset.y) * mFloor.mScale
-              - getHeight() / 2 * (mFloor.mScale - mFloor.mLastScale)
-              / mFloor.mLastScale - getHeight() / 3 * mFloor.mScale
-              / mFloor.mLastScale + w * mFloor.mScale;
-          RectF rectf = new RectF(x, y, x + getWidth() * 5 / 3 * mFloor.mScale
-              / mFloor.mLastScale - 2 * w * mFloor.mScale, y + getHeight() * 5
-              / 3 * mFloor.mScale / mFloor.mLastScale - 2 * w * mFloor.mScale);
+          Rect rect = new Rect((int) w, (int) w, getWidth() * 5 / 3 - (int) w, getHeight() * 5 / 3 - (int) w);
+          float x =
+              (mFloor.mOffset.x - mFloor.mLastOffset.x) * mFloor.mScale - getWidth() / 2 * (mFloor.mScale - mFloor.mLastScale)
+                  / mFloor.mLastScale - getWidth() / 3 * mFloor.mScale / mFloor.mLastScale + w * mFloor.mScale;
+          float y =
+              (mFloor.mOffset.y - mFloor.mLastOffset.y) * mFloor.mScale - getHeight() / 2 * (mFloor.mScale - mFloor.mLastScale)
+                  / mFloor.mLastScale - getHeight() / 3 * mFloor.mScale / mFloor.mLastScale + w * mFloor.mScale;
+          RectF rectf =
+              new RectF(x, y, x + getWidth() * 5 / 3 * mFloor.mScale / mFloor.mLastScale - 2 * w * mFloor.mScale, y + getHeight() * 5 / 3
+                  * mFloor.mScale / mFloor.mLastScale - 2 * w * mFloor.mScale);
           // logd("rect=" + rect + ", rectf=" + rectf);
           canvas.drawBitmap(mBitmap, rect, rectf, paint);
           if (mShopPosition.mShow) {
@@ -1969,8 +1921,7 @@ public class MacroMap extends ScrollView {
     }
 
     void init() {
-      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-          Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.navigation, this, true);
       Button button = (Button) findViewById(R.id.button_prev);
       button.setOnClickListener(new OnClickListener() {
@@ -2031,12 +1982,9 @@ public class MacroMap extends ScrollView {
       // FrameLayout.LayoutParams params = new
       // FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
       // LayoutParams.WRAP_CONTENT);
-      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-          LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-      params.leftMargin = (MacroMap.this.getWidth() - mNavigationButtons
-          .getWidth()) / 2;
-      params.topMargin = MacroMap.this.getHeight()
-          - mNavigationButtons.getHeight();
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+      params.leftMargin = (MacroMap.this.getWidth() - mNavigationButtons.getWidth()) / 2;
+      params.topMargin = MacroMap.this.getHeight() - mNavigationButtons.getHeight();
       params.leftMargin = 0;
       // params.topMargin = 0;
       params.topMargin = MacroMap.this.getHeight() - 200;
@@ -2068,15 +2016,13 @@ public class MacroMap extends ScrollView {
     }
 
     void init() {
-      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-          Context.LAYOUT_INFLATER_SERVICE);
+      LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       inflater.inflate(R.layout.shopposition, this, true);
       ImageButton share = (ImageButton) findViewById(R.id.shop_share);
       share.setOnClickListener(new OnClickListener() {
         public void onClick(View v) {
           if (mOnMapEventListener != null && mShop != null) {
-            mOnMapEventListener.OnMapEvent(mShop.mId,
-                OnMapEventType.MapClickedLeft);
+            mOnMapEventListener.OnMapEvent(mShop.mId, OnMapEventType.MapClickedLeft);
           }
         }
       });
@@ -2084,8 +2030,7 @@ public class MacroMap extends ScrollView {
       more.setOnClickListener(new OnClickListener() {
         public void onClick(View v) {
           if (mOnMapEventListener != null && mShop != null) {
-            mOnMapEventListener.OnMapEvent(mShop.mId,
-                OnMapEventType.MapClickedRight);
+            mOnMapEventListener.OnMapEvent(mShop.mId, OnMapEventType.MapClickedRight);
           }
         }
       });
@@ -2104,10 +2049,7 @@ public class MacroMap extends ScrollView {
 
   static void logd(String log) {
     StackTraceElement ste = new Throwable().getStackTrace()[1];
-    Log.d(
-        ste.getClassName(),
-        "at " + ste.getMethodName() + "(" + ste.getFileName() + ":"
-            + ste.getLineNumber() + ")" + "  " + log);
+    Log.d(ste.getClassName(), "at " + ste.getMethodName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")" + "  " + log);
   }
 
   static void logd(Throwable e) {
@@ -2126,8 +2068,7 @@ public class MacroMap extends ScrollView {
   private int mAssistantFilledHighlightColor = Color.YELLOW;
   private int mAssistantTextColor = Color.BLACK;
   HashMap<String, Integer> mBorderColors = new HashMap<String, Integer>();
-  ConfigureFile mConfigure = new ConfigureFile(new File(
-      Environment.getExternalStorageDirectory(), "/Palmap/configure.json"));
+  ConfigureFile mConfigure = new ConfigureFile(new File(Environment.getExternalStorageDirectory(), "/Palmap/configure.json"));
 
   // private Drawable mEscalatorElevatorIcon;
   // private Drawable mEscalatorEscalatorIcon;
@@ -2187,8 +2128,7 @@ public class MacroMap extends ScrollView {
 
   HashMap<String, Integer> mTextColors = new HashMap<String, Integer>();
 
-  Typeface mTypeface = Typeface.createFromAsset(getContext().getAssets(),
-      "PalmapPublic.ttf");
+  Typeface mTypeface = Typeface.createFromAsset(getContext().getAssets(), "PalmapPublic.ttf");
 
   NavigationButtons mNavigationButtons = null;
 
@@ -2289,9 +2229,7 @@ public class MacroMap extends ScrollView {
         if (mOnMapEventListener != null) {
           Poi poi = getPoi((int) ex - getLeft(), (int) ey - getTop());
           if (poi != null) {
-            mOnMapEventListener.OnMapEvent(poi.mId,
-                poi.mSelected ? OnMapEventType.MapSelected
-                    : OnMapEventType.MapUnselected);
+            mOnMapEventListener.OnMapEvent(poi.mId, poi.mSelected ? OnMapEventType.MapSelected : OnMapEventType.MapUnselected);
           }
         }
       } else if ((Math.abs(ex - mLastX) + Math.abs(ey - mLastY) > 10)
@@ -2327,8 +2265,7 @@ public class MacroMap extends ScrollView {
         mLastX = (event.getX(1) + event.getX(0)) / 2;// - mLocationX;
         mLastY = (event.getY(1) + event.getY(0)) / 2;// - mLocationY;
         // logd("r=" + r);
-      } else if (event.getAction() == MotionEvent.ACTION_MOVE
-          || event.getAction() == MotionEvent.ACTION_POINTER_UP) {
+      } else if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_POINTER_UP) {
         mRedraw = event.getAction() == MotionEvent.ACTION_POINTER_UP;
         mShopPosition.setVisibility(INVISIBLE);
         mShopPosition.mShow = false;
@@ -2341,18 +2278,14 @@ public class MacroMap extends ScrollView {
         // logd("r=" + r);
         x = (event.getX(1) + event.getX(0)) / 2;// - mLocationX;
         y = (event.getY(1) + event.getY(0)) / 2;// - mLocationY;
-        addOffset(x
-            - ((mLastX - getLeft() - getWidth() / 2) * r / mLastScale
-                + getLeft() + getWidth() / 2), y
-            - ((mLastY - getTop() - getHeight() / 2) * r / mLastScale
-                + getTop() + getHeight() / 2));
+        addOffset(x - ((mLastX - getLeft() - getWidth() / 2) * r / mLastScale + getLeft() + getWidth() / 2), y
+            - ((mLastY - getTop() - getHeight() / 2) * r / mLastScale + getTop() + getHeight() / 2));
         mLastX = x;
         mLastY = y;
         mLastScale = r;
         // logd("mRedraw=" + mRedraw);
       } else if (mIsScale
-          && (event.getAction() == MotionEvent.ACTION_POINTER_UP || (event
-              .getAction() & 0xFF) == (MotionEvent.ACTION_POINTER_UP))) {
+          && (event.getAction() == MotionEvent.ACTION_POINTER_UP || (event.getAction() & 0xFF) == (MotionEvent.ACTION_POINTER_UP))) {
         // mIsScale = false;
         mRedraw = true;
         // logd("mRedraw=" + mRedraw);
@@ -2485,8 +2418,7 @@ public class MacroMap extends ScrollView {
     mOnMapEventListener = onMapEventListener;
   }
 
-  public void setOnMapFloorChangedListener(
-      OnMapFloorChangedListener onMapFloorChangedListener) {
+  public void setOnMapFloorChangedListener(OnMapFloorChangedListener onMapFloorChangedListener) {
     mOnMapFloorChangedListener = onMapFloorChangedListener;
   }
 
@@ -2548,8 +2480,7 @@ public class MacroMap extends ScrollView {
   @Override
   protected void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    logd("mOrientation=" + mOrientation + ", newConfig.orientation="
-        + newConfig.orientation);
+    logd("mOrientation=" + mOrientation + ", newConfig.orientation=" + newConfig.orientation);
     if (mOrientation != newConfig.orientation) {
       mOrientation = newConfig.orientation;
       mRedraw = true;
@@ -2596,8 +2527,7 @@ public class MacroMap extends ScrollView {
   int downloadJson(String u, File file) {
     try {
       URL url = new URL(u);
-      HttpURLConnection urlConnection = (HttpURLConnection) url
-          .openConnection();
+      HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
       urlConnection.setRequestMethod("GET");
       urlConnection.setRequestProperty("Accept", "application/json");
       // urlConnection.setRequestMethod("GET");
@@ -2667,8 +2597,7 @@ public class MacroMap extends ScrollView {
   }
 
   int setJson(String mallid, String floorid) {
-    String url = "http://apitest.palmap.cn/mall/" + mallid + "/floor/"
-        + floorid;
+    String url = "http://apitest.palmap.cn/mall/" + mallid + "/floor/" + floorid;
     new Thread(new DownloadJson(mallid, floorid, url)).start();
     return 0;
   }
@@ -2730,15 +2659,13 @@ public class MacroMap extends ScrollView {
     mPublicServiceIcons.put("25065", "{"); // 闂澶�
     mSpinner = new Spinner(getContext());
     mSpinner.setPrompt("Floors:");
-    mFloorsAdapter = new ArrayAdapter<Mall.Floor>(getContext(),
-        android.R.layout.simple_spinner_item, 0, new ArrayList<Mall.Floor>());
+    mFloorsAdapter = new ArrayAdapter<Mall.Floor>(getContext(), android.R.layout.simple_spinner_item, 0, new ArrayList<Mall.Floor>());
     // (Mall.Floor[]) mMall.mFloors.values().toArray()
     mSpinner.setAdapter(mFloorsAdapter);
     mRelativeLayout.addView(mSpinner);
     addView(mRelativeLayout);
     mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-      public void onItemSelected(AdapterView<?> parent, View view,
-          int position, long id) {
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String floorid = mFloorsAdapter.getItem(position).mId;
         mRedraw = true;
         mShopPosition.mShow = false;
@@ -2769,14 +2696,12 @@ public class MacroMap extends ScrollView {
     // mRelativeLayout.addView(linear);
     mShopPosition = new ShopPosition(getContext(), attrs, defStyle);
     mShopPosition.setVisibility(INVISIBLE);
-    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     mRelativeLayout.addView(mShopPosition, params);
 
     mNavigationButtons = new NavigationButtons(getContext(), attrs, defStyle);
     // RelativeLayout.LayoutParams
-    params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-        LayoutParams.WRAP_CONTENT);
+    params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
     params.leftMargin = getWidth() - mNavigationButtons.getWidth() / 2;
     params.topMargin = getHeight() - mNavigationButtons.getHeight();
     params.leftMargin = 0;
@@ -2786,63 +2711,34 @@ public class MacroMap extends ScrollView {
     mNavigationButtons.setVisibility(INVISIBLE);
     mRelativeLayout.addView(mNavigationButtons, params);
 
-    final TypedArray a = getContext().obtainStyledAttributes(attrs,
-        R.styleable.MacroMap, defStyle, 0);
+    final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MacroMap, defStyle, 0);
 
-    mMapBackgroundColor = a.getColor(R.styleable.MacroMap_mapBackgroundColor,
-        mMapBackgroundColor);
-    mFrameBorderColor = a.getColor(R.styleable.MacroMap_frameBorderColor,
-        mFrameBorderColor);
-    mFrameFilledColor = a.getColor(R.styleable.MacroMap_frameFilledColor,
-        mFrameFilledColor);
-    mFrameBorderSize = a.getInt(R.styleable.MacroMap_frameBorderSize,
-        mFrameBorderSize);
+    mMapBackgroundColor = a.getColor(R.styleable.MacroMap_mapBackgroundColor, mMapBackgroundColor);
+    mFrameBorderColor = a.getColor(R.styleable.MacroMap_frameBorderColor, mFrameBorderColor);
+    mFrameFilledColor = a.getColor(R.styleable.MacroMap_frameFilledColor, mFrameFilledColor);
+    mFrameBorderSize = a.getInt(R.styleable.MacroMap_frameBorderSize, mFrameBorderSize);
 
-    mAssistantBorderColor = a.getColor(
-        R.styleable.MacroMap_assistantBorderColor, mAssistantBorderColor);
-    mAssistantBorderHightlightColor = a.getColor(
-        R.styleable.MacroMap_assistantBorderHighlightColor,
-        mAssistantBorderHightlightColor);
-    mAssistantFilledColor = a.getColor(
-        R.styleable.MacroMap_assistantFilledColor, mAssistantFilledColor);
-    mAssistantFilledHighlightColor = a.getColor(
-        R.styleable.MacroMap_assistantFilledHighlightColor,
-        mAssistantFilledHighlightColor);
-    mAssistantTextColor = a.getColor(R.styleable.MacroMap_assistantTextColor,
-        mAssistantTextColor);
-    mAssistantBorderSize = a.getInt(R.styleable.MacroMap_assistantBorderSize,
-        mAssistantBorderSize);
+    mAssistantBorderColor = a.getColor(R.styleable.MacroMap_assistantBorderColor, mAssistantBorderColor);
+    mAssistantBorderHightlightColor = a.getColor(R.styleable.MacroMap_assistantBorderHighlightColor, mAssistantBorderHightlightColor);
+    mAssistantFilledColor = a.getColor(R.styleable.MacroMap_assistantFilledColor, mAssistantFilledColor);
+    mAssistantFilledHighlightColor = a.getColor(R.styleable.MacroMap_assistantFilledHighlightColor, mAssistantFilledHighlightColor);
+    mAssistantTextColor = a.getColor(R.styleable.MacroMap_assistantTextColor, mAssistantTextColor);
+    mAssistantBorderSize = a.getInt(R.styleable.MacroMap_assistantBorderSize, mAssistantBorderSize);
 
-    mShopBorderColor = a.getColor(R.styleable.MacroMap_shopBorderColor,
-        mShopBorderColor);
-    mShopBorderHightlightColor = a.getColor(
-        R.styleable.MacroMap_shopBorderHighlightColor,
-        mShopBorderHightlightColor);
-    mShopFilledColor = a.getColor(R.styleable.MacroMap_shopFilledColor,
-        mShopFilledColor);
-    mShopFilledHighlightColor = a.getColor(
-        R.styleable.MacroMap_shopFilledHighlightColor,
-        mShopFilledHighlightColor);
-    mShopTextColor = a.getColor(R.styleable.MacroMap_shopTextColor,
-        mShopTextColor);
-    mShopBorderSize = a.getInt(R.styleable.MacroMap_shopBorderSize,
-        mShopBorderSize);
+    mShopBorderColor = a.getColor(R.styleable.MacroMap_shopBorderColor, mShopBorderColor);
+    mShopBorderHightlightColor = a.getColor(R.styleable.MacroMap_shopBorderHighlightColor, mShopBorderHightlightColor);
+    mShopFilledColor = a.getColor(R.styleable.MacroMap_shopFilledColor, mShopFilledColor);
+    mShopFilledHighlightColor = a.getColor(R.styleable.MacroMap_shopFilledHighlightColor, mShopFilledHighlightColor);
+    mShopTextColor = a.getColor(R.styleable.MacroMap_shopTextColor, mShopTextColor);
+    mShopBorderSize = a.getInt(R.styleable.MacroMap_shopBorderSize, mShopBorderSize);
 
-    mPublicServiceTextColor = a.getColor(
-        R.styleable.MacroMap_publicServiceTextColor, mPublicServiceTextColor);
-    mPublicServiceTextHighlightColor = a.getColor(
-        R.styleable.MacroMap_publicServiceTextHighlightColor,
-        mPublicServiceTextHighlightColor);
-    mPublicServiceAtmIcon = a
-        .getDrawable(R.styleable.MacroMap_publicServiceAtmIcon);
-    mPublicServiceToiletIcon = a
-        .getDrawable(R.styleable.MacroMap_publicServiceToiletIcon);
+    mPublicServiceTextColor = a.getColor(R.styleable.MacroMap_publicServiceTextColor, mPublicServiceTextColor);
+    mPublicServiceTextHighlightColor = a.getColor(R.styleable.MacroMap_publicServiceTextHighlightColor, mPublicServiceTextHighlightColor);
+    mPublicServiceAtmIcon = a.getDrawable(R.styleable.MacroMap_publicServiceAtmIcon);
+    mPublicServiceToiletIcon = a.getDrawable(R.styleable.MacroMap_publicServiceToiletIcon);
 
-    mEscalatorTextColor = a.getColor(R.styleable.MacroMap_escalatorTextColor,
-        mEscalatorTextColor);
-    mEscalatorTextHighlightColor = a.getColor(
-        R.styleable.MacroMap_escalatorTextHighlightColor,
-        mEscalatorTextHighlightColor);
+    mEscalatorTextColor = a.getColor(R.styleable.MacroMap_escalatorTextColor, mEscalatorTextColor);
+    mEscalatorTextHighlightColor = a.getColor(R.styleable.MacroMap_escalatorTextHighlightColor, mEscalatorTextHighlightColor);
     // mEscalatorEscalatorIcon = a
     // .getDrawable(R.styleable.MacroMap_escalatorEscalatorIcon);
     // mEscalatorElevatorIcon = a
@@ -2850,11 +2746,8 @@ public class MacroMap extends ScrollView {
     // mEscalatorStairIcon = a
     // .getDrawable(R.styleable.MacroMap_escalatorStairIcon);
 
-    mAnnotationTextColor = a.getColor(R.styleable.MacroMap_annotationTextColor,
-        mAnnotationTextColor);
-    mAnnotationTextHighlightColor = a.getColor(
-        R.styleable.MacroMap_annotationTextHighlightColor,
-        mAnnotationTextHighlightColor);
+    mAnnotationTextColor = a.getColor(R.styleable.MacroMap_annotationTextColor, mAnnotationTextColor);
+    mAnnotationTextHighlightColor = a.getColor(R.styleable.MacroMap_annotationTextHighlightColor, mAnnotationTextHighlightColor);
     a.recycle();
   }
 

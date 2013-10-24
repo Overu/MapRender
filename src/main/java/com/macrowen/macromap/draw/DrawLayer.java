@@ -102,7 +102,9 @@ public class DrawLayer<T> extends DrawMap<T> {
 
   @Override
   public void onDrawPath(JSONArray jsonArray) {
-    mPath = new Path();
+    if (mPath == null) {
+      mPath = new Path();
+    }
     PointF point = new PointF(0, 0);
     int linecount = 0;
     PointF points[] = new PointF[jsonArray.length()];

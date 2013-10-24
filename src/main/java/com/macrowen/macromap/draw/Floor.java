@@ -20,6 +20,8 @@ import android.graphics.PointF;
 @SuppressLint("DrawAllocation")
 public class Floor extends DrawLayer<JSONObject> {
 
+  protected Paint floorPath = new Paint();
+
   HashMap<PointF, Shop> mShops = new HashMap<PointF, Shop>();
   HashMap<PointF, PublicService> mPublicServices = new HashMap<PointF, PublicService>();
 
@@ -30,6 +32,8 @@ public class Floor extends DrawLayer<JSONObject> {
   private Canvas textCanvas;
   public ParseType mParseType = ParseType.Parse;
 
+  private int mFloorBgColor;
+
   public Shop mShop;
 
   public Floor(String id, String name, int index) {
@@ -39,6 +43,7 @@ public class Floor extends DrawLayer<JSONObject> {
 
     mBorderSize = 3;
     mBorderColor = Color.BLUE;
+    mFloorBgColor = Color.WHITE;
     if (mColorConfigures == null) {
       return;
     }
@@ -51,6 +56,11 @@ public class Floor extends DrawLayer<JSONObject> {
     color = mColorConfigures.getColor(cs);
     if (color != null) {
       mFilledColor = color;
+    }
+    cs = mColorConfigures.getFrameConfigure("floorBgColor");
+    color = mColorConfigures.getColor(cs);
+    if (color != null) {
+      mFloorBgColor = color;
     }
     cs = mColorConfigures.getFrameConfigure("borderWidth");
     Float floatWidth = mColorConfigures.getFloat(cs);
@@ -84,9 +94,8 @@ public class Floor extends DrawLayer<JSONObject> {
     if (mPath == null) {
       return;
     }
-    Paint paint = new Paint();
-    paint.setColor(Color.WHITE);
-    canvas.drawPaint(paint);
+    floorPath.setColor(mFloorBgColor);
+    canvas.drawPaint(floorPath);
     this.onDrawBlock(canvas);
     // this.drawFloor(canvas);
 
