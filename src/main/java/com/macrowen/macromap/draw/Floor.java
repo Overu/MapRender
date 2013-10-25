@@ -124,10 +124,10 @@ public class Floor extends DrawLayer<JSONObject> {
     this.onDrawLine(canvas);
 
     mParseType = ParseType.NoParse;
+    mDrawType = DrawType.ReDraw;
     if (shopPosition == null) {
       return;
     }
-    mDrawType = DrawType.ReDraw;
     if (mShop != null && mShop.mBlockRegion != null
         && !(mShop.mDisplay == null || mShop.mDisplay.trim().equals("") || mShop.mDisplay.equalsIgnoreCase("null"))) {
       PointF p = mShop.mTextCenter;

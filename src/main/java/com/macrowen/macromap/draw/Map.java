@@ -89,7 +89,7 @@ public class Map extends DrawMap<JSONArray> {
       mRedraw = false;
       // paint.setColor(Color.WHITE);
       this.recycleBitmap(mBmp);
-      mBmp = null;
+      // mBmp = null;
       mBmp = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
       Canvas cc = new Canvas(mBmp);
       // cc.drawPaint(paint);
@@ -100,7 +100,7 @@ public class Map extends DrawMap<JSONArray> {
       mFloor.onDraw(cc);
       mScale = scale;
       mFloor.mDrawType = DrawType.Draw;
-      mainLayer = null;
+      // mainLayer = null;
       mainLayer = Bitmap.createBitmap(delegateWidth * 5 / 3, delegateHeight * 5 / 3, Config.ARGB_8888);
       mainCanvas = new Canvas(mainLayer);
       mainCanvas.translate(delegateWidth / 3, delegateHeight / 3);
