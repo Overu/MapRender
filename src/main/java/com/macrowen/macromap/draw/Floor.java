@@ -4,6 +4,9 @@ import com.macrowen.macromap.draw.data.JSONData;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import android.graphics.RectF;
+
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.FrameLayout.LayoutParams;
@@ -288,6 +291,26 @@ public class Floor extends DrawLayer<JSONObject> {
   @Override
   public void setPosition(float x, float y) {
     mPosition = new PointF(x, y);
+  }
+
+  public void setShop(String shopId) {
+    if (shopId == null || mShops == null || shopId.isEmpty() || mShops.isEmpty()) {
+      return;
+    }
+
+    for (Shop shop : mShops.values()) {
+      if (shopId.equals(shop.getId())) {
+        RectF rectF = new RectF();
+        mShop = shop;
+        shop.mPath.computeBounds(rectF, false);
+        if (shop.mDrawTextSize < mMiniumSize) {
+          float scale = mScale * Math.min(delegateWidth / 3 / rectF.width(), delegateHeight / 3 / rectF.height());
+          setScale(scale);
+        }
+        setOffset(-mShop.mRect.centerX() + delegateWidth / 2, -mShop.mRect.centerY() + delegateHeight / 2);
+        break;
+      }
+    }
   }
 
   @Override

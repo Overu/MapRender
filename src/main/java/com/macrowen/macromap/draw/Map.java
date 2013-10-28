@@ -273,6 +273,12 @@ public class Map extends DrawMap<JSONArray> {
     DrawMap.mPublicServiceIcons = publicServiceIcons;
   }
 
+  public void setShop(String shopId) {
+    if (mCurFloor != null) {
+      mCurFloor.setShop(shopId);
+    }
+  }
+
   public void setShopPosition(ShopPosition shopPoisiton) {
     DrawMap.shopPosition = shopPoisiton;
   }

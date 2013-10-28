@@ -402,6 +402,15 @@ public class MapService {
     }
   }
 
+  public void setShop(String floorId, String shopId) {
+    if (mMall == null) {
+      return;
+    }
+    setFloor(floorId);
+    mMall.setShop(shopId);
+    mMall.reDraw();
+  }
+
   public void setShopPosition(ShopPosition shopPosition) {
     mMall.setShopPosition(shopPosition);
   }
