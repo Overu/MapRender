@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-
 import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
